@@ -1,19 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-// Controller functions (logic separate kar sakte ho)
-const { signup, login, logout } = require('../controllers/authController');
+// Controller functions
+const authController = require('../controllers/authController');
 
-// Signup
-// POST /api/auth/signup
-router.post('/signup', signup);
+// Signup (profileFor + image)
+router.post('/signup', authController.upload.single('profileImage'), authController.signup);
 
 // Login
-// POST /api/auth/login
-router.post('/login', login);
+router.post('/login', authController.login);
 
 // Logout
-// POST /api/auth/logout
-router.post('/logout', logout);
+router.post('/logout', authController.logout);
 
 module.exports = router;
