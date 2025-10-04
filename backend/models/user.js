@@ -54,7 +54,10 @@ const userSchema = new mongoose.Schema({
 
     // Profile Extras
     aboutYourself: { type: String, trim: true },
-    profileImage: { type: String }, // store image URL or filename
+ profileImage: {
+    data: Buffer,
+    contentType: String
+},// store image URL or filename
 
     // Auth Helpers
     resetPasswordToken: String,

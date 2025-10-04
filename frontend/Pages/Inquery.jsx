@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify'; // <-- Add this line
-import 'react-toastify/dist/ReactToastify.css'; // <-- Add this line
-import { X, User, Phone, Users, Briefcase, ChevronRight, ChevronLeft } from 'lucide-react';
-
-const baseUrl = import.meta.env.VITE_BACKEND_URL;
+import { X, User, Phone, Users, Briefcase, ChevronRight, ChevronLeft, Camera } from 'lucide-react';
 
 const Inquiry = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -30,7 +25,7 @@ const Inquiry = () => {
     livingIn: '',
     city: '',
     state: '',
-    Country: '', // Make sure Country field exists
+    country: '',
     
     // Family Background
     liveWithFamily: true,
@@ -50,6 +45,9 @@ const Inquiry = () => {
     languagesKnown: [],
     aboutYourself: '',
     
+    // Profile Image
+    profileImage: null,
+    
     // Contact
     email: '',
     mobile: '',
@@ -57,14 +55,15 @@ const Inquiry = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [successMsg, setSuccessMsg] = useState(""); // <-- Add this line
-  const [errorMsg, setErrorMsg] = useState("");     // <-- Add this line
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
   const steps = [
     { num: 1, title: 'Personal Details', desc: 'Basic information about you', icon: User },
     { num: 2, title: 'Contact Information', desc: 'How can we reach you', icon: Phone },
-    { num: 3, title: 'Family Background', desc: 'Tell us about your family', icon: Users },
-    { num: 4, title: 'Education & Career', desc: 'Your professional details', icon: Briefcase }
+    { num: 3, title: 'Family & Career', desc: 'Tell us about your background', icon: Users },
+    { num: 4, title: 'Profile Photo', desc: 'Upload your profile picture', icon: Camera }
   ];
 
   const religionOptions = [
@@ -107,10 +106,42 @@ const Inquiry = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        setErrors(prev => ({ ...prev, profileImage: 'Please upload a valid image (JPG, PNG, WEBP)' }));
+        return;
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, profileImage: 'Image size should be less than 5MB' }));
+        return;
+      }
+
+      setFormData(prev => ({ ...prev, profileImage: file }));
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      
+      if (errors.profileImage) {
+        setErrors(prev => ({ ...prev, profileImage: '' }));
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, profileImage: null }));
+    setImagePreview(null);
   };
 
   const handleLanguageChange = (e) => {
@@ -143,8 +174,12 @@ const Inquiry = () => {
       if (!formData.password) newErrors.password = 'Required';
       else if (formData.password.length < 6) newErrors.password = 'Min 6 characters';
     }
+
+    if (step === 4) {
+      if (!formData.profileImage) newErrors.profileImage = 'Please upload a profile photo';
+    }
     
-    // Step 3 and 4 are optional fields, no validation needed
+    // Step 3 is optional fields, no validation needed
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -166,23 +201,116 @@ const Inquiry = () => {
     }
   };
 
- const handleSubmit = async () => {
-  try {
-    const res = await axios.post(`http://localhost:4000/api/signup`, formData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    setSuccessMsg(res.data.message || "Profile created successfully!");
-    setErrorMsg("");
-    toast.success(res.data.message || "Signup successful!"); // <-- Show toast on success
-  } catch (err) {
-    setErrorMsg(err.response?.data?.message || "Something went wrong");
-    setSuccessMsg("");
-    toast.error(err.response?.data?.message || "Signup failed!"); // <-- Show toast on error
-  }
-};
+  // const handleSubmit = async () => {
+  //   try {
+  //     // Create FormData for file upload
+  //     const formDataToSend = new FormData();
+      
+  //     // Append all form fields
+  //     Object.keys(formData).forEach(key => {
+  //       if (key === 'profileImage' && formData[key]) {
+  //         formDataToSend.append('profileImage', formData[key]);
+  //       } else if (key === 'languagesKnown') {
+  //         formDataToSend.append(key, JSON.stringify(formData[key]));
+  //       } else if (formData[key] !== null && formData[key] !== '') {
+  //         formDataToSend.append(key, formData[key]);
+  //       }
+  //     });
 
+  //     // Note: Replace with your actual backend URL
+  //     const res = await fetch('http://localhost:4000/api/signup', {
+  //       method: 'POST',
+  //       body: formDataToSend,
+  //     });
+
+  //     const data = await res.json();
+      
+  //     if (res.ok) {
+  //       setSuccessMsg(data.message || "Profile created successfully!");
+  //       setErrorMsg("");
+  //       // Show success toast message
+  //       alert(data.message || "Signup successful!");
+  //     } else {
+  //       throw new Error(data.message || "Something went wrong");
+  //     }
+  //   } catch (err) {
+  //     setErrorMsg(err.message || "Something went wrong");
+  //     setSuccessMsg("");
+  //     // Show error toast message
+  //     alert(err.message || "Signup failed!");
+  //   }
+  // };
+const handleSubmit = async () => {
+    try {
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      
+      // Append all form fields
+      Object.keys(formData).forEach(key => {
+        if (key === 'profileImage' && formData[key]) {
+          // Append image - check backend field name (profileImage, image, photo, etc.)
+          formDataToSend.append('profileImage', formData[key], formData[key].name);
+        } else if (key === 'languagesKnown') {
+          formDataToSend.append(key, JSON.stringify(formData[key]));
+        } else if (formData[key] !== null && formData[key] !== '' && formData[key] !== undefined) {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
+      // Debug: Check what's being sent
+      console.log('Form Data being sent:');
+      for (let pair of formDataToSend.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      // Note: Replace with your actual backend URL
+      const res = await fetch('http://localhost:4000/api/signup', {
+        method: 'POST',
+        body: formDataToSend,
+        // Don't set Content-Type header - browser will set it automatically with boundary
+      });
+
+      // First check if response is ok
+      if (!res.ok) {
+        // Try to get error message from response
+        let errorMessage = 'Server error';
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorData.error || `Server error: ${res.status}`;
+          console.error('Server response:', errorData);
+        } catch (e) {
+          // If response is not JSON, get text
+          const errorText = await res.text();
+          console.error('Server response (text):', errorText);
+          errorMessage = errorText || `Server error: ${res.status}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await res.json();
+      
+      setSuccessMsg(data.message || "Profile created successfully!");
+      setErrorMsg("");
+      console.log('Signup successful:', data);
+      
+      // Reset form after successful submission
+      setTimeout(() => {
+        // window.location.href = '/success'; // Uncomment when you have success page
+        alert('Profile created successfully!');
+      }, 1500);
+      
+    } catch (err) {
+      const errorMessage = err.message || "Something went wrong. Please try again.";
+      setErrorMsg(errorMessage);
+      setSuccessMsg("");
+      console.error('Signup error details:', err);
+      
+      // Show user-friendly error
+      if (errorMessage.includes('Failed to fetch')) {
+        setErrorMsg('Cannot connect to server. Please check if backend is running.');
+      }
+    }
+  };
   const renderField = (label, name, type = 'text', options = null, required = false) => {
     if (type === 'select') {
       return (
@@ -328,7 +456,7 @@ const Inquiry = () => {
                 <div className="grid grid-cols-3 gap-4">
                   {renderField('City', 'city', 'text', null, true)}
                   {renderField('State', 'state', 'text', null, true)}
-                  {renderField('Country', 'Country', 'text', null, true)}
+                  {renderField('country', 'country', 'text', null, true)}
                 </div>
               </div>
             )}
@@ -342,9 +470,11 @@ const Inquiry = () => {
               </div>
             )}
 
-            {/* Step 3: Family Background */}
+            {/* Step 3: Family Background & Education */}
             {currentStep === 3 && (
               <div className="space-y-4">
+                <h3 className="font-semibold text-lg text-gray-800 mt-2">Family Background</h3>
+                
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
@@ -359,13 +489,10 @@ const Inquiry = () => {
                 {renderField("Father's Name", 'fatherName', 'text', null, false)}
                 {renderField("Mother's Name", 'motherName', 'text', null, false)}
                 {renderField('Number of Family Members', 'familyMembers', 'number', null, false)}
-              </div>
-            )}
 
-            {/* Step 4: Education & Career */}
-            {currentStep === 4 && (
-              <div className="space-y-4">
-                {renderField('Highest Qualification', 'highestQualification', 'text', null, true)}
+                <h3 className="font-semibold text-lg text-gray-800 mt-6">Education & Career</h3>
+                
+                {renderField('Highest Qualification', 'highestQualification', 'text', null, false)}
                 {renderField('College Name', 'collegeName', 'text', null, false)}
                 {renderField('Work Details', 'workDetails', 'select', ['Private', 'Government', 'Business', 'Self Employed', 'Not Working'], false)}
                 {renderField('Work As', 'workAs', 'text', null, false)}
@@ -397,6 +524,51 @@ const Inquiry = () => {
                     placeholder="Tell us about yourself..."
                     className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20"
                   />
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Profile Photo */}
+            {currentStep === 4 && (
+              <div className="space-y-4">
+                <div className="flex flex-col items-center justify-center p-8">
+                  {!imagePreview ? (
+                    <label className="w-full cursor-pointer">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-red-900 transition-colors">
+                        <Camera size={48} className="mx-auto mb-4 text-gray-400" />
+                        <p className="text-lg font-medium text-gray-700 mb-2">Upload Profile Photo</p>
+                        <p className="text-sm text-gray-500 mb-4">Click to browse or drag and drop</p>
+                        <p className="text-xs text-gray-400">JPG, PNG or WEBP (Max 5MB)</p>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/jpg,image/png,image/webp"
+                          onChange={handleImageChange}
+                          className="hidden"
+                        />
+                      </div>
+                    </label>
+                  ) : (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Profile preview"
+                        className="w-64 h-64 object-cover rounded-lg border-4 border-red-900/20"
+                      />
+                      <button
+                        onClick={handleRemoveImage}
+                        type="button"
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-2 hover:bg-red-700"
+                      >
+                        <X size={20} />
+                      </button>
+                      <p className="text-center mt-4 text-sm text-gray-600">
+                        {formData.profileImage?.name}
+                      </p>
+                    </div>
+                  )}
+                  {errors.profileImage && (
+                    <span className="text-sm text-red-600 mt-2">{errors.profileImage}</span>
+                  )}
                 </div>
               </div>
             )}
@@ -432,7 +604,6 @@ const Inquiry = () => {
           </p>
         </div>
       </div>
-      <ToastContainer position="top-center" autoClose={3000} /> {/* <-- Add this line */}
     </div>
   );
 };
