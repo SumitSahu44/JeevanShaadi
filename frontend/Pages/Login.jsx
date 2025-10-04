@@ -1,13 +1,70 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
-    console.log('Login attempt:', { email, password });
+    console.log('Login attempt:', { email, mobile, password });
+  };
+
+  // New async submit that sends POST to backend
+  const submitLogin = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if ((!email && !mobile) || !password) {
+      setError('Email or mobile and password are required');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch('http://localhost:4000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email || undefined, mobile: mobile || undefined, password })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || 'Login failed');
+        return;
+      }
+
+      const successMessage = data.message || 'Login successful';
+
+      if (data.token) {
+        try {
+          localStorage.setItem('token', data.token);
+        } catch (err) {
+          // ignore localStorage errors in strict environments
+          console.warn('Could not save token to localStorage', err);
+        }
+      }
+      // show toast and redirect
+      toast.success(successMessage);
+      // delay briefly to allow toast to appear
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 500);
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Network error while attempting to login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -181,6 +238,22 @@ export default function LoginForm() {
               </div>
             </div>
 
+            {/* Or Mobile */}
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
+                Or Mobile
+              </label>
+              <div className="relative">
+                <input
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  className="w-full pl-3 pr-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent transition-all"
+                  placeholder="Enter your mobile number"
+                />
+              </div>
+            </div>
+
             {/* Password */}
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
@@ -207,10 +280,10 @@ export default function LoginForm() {
 
             {/* Remember & Forgot */}
             <div className="flex items-center justify-between pt-1">
-              <label className="flex items-center cursor-pointer">
+              {/* <label className="flex items-center cursor-pointer">
                 <input type="checkbox" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-900 border-gray-300 rounded focus:ring-red-900" />
                 <span className="ml-2 text-xs sm:text-sm text-gray-600">Remember me</span>
-              </label>
+              </label> */}
               <button className="text-xs sm:text-sm text-red-900 hover:text-red-800 font-medium">
                 Forgot password?
               </button>
@@ -218,11 +291,15 @@ export default function LoginForm() {
 
             {/* Submit Button */}
             <button
-              onClick={handleSubmit}
+              onClick={submitLogin}
               className="w-full bg-red-900 text-white py-2.5 sm:py-3 text-sm sm:text-base rounded-xl font-medium hover:bg-red-800 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl mt-2"
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
+
+            {/* Messages */}
+            {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+            {success && <p className="text-sm text-green-600 mt-2">{success}</p>}
 
             {/* Divider */}
             <div className="relative my-4 md:my-5">

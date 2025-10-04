@@ -162,11 +162,11 @@ export default function MatrimonyDashboard() {
             <Search size={20} />
             <span>Browse</span>
           </button>
-          <button className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl hover:bg-red-800 transition-colors">
+          {/* <button className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl hover:bg-red-800 transition-colors">
             <Heart size={20} />
             <span>Favorites</span>
             <span className="ml-auto bg-red-800 px-2 py-0.5 rounded-full text-xs">{likedProfiles.length}</span>
-          </button>
+          </button> */}
           <button className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl hover:bg-red-800 transition-colors">
             <User size={20} />
             <span>My Profile</span>
@@ -204,7 +204,7 @@ export default function MatrimonyDashboard() {
                     alt={profile.name}
                     className="w-full h-56 object-cover"
                   />
-                  <button 
+                  {/* <button 
                     onClick={() => toggleLike(profile.id)}
                     className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition-all ${
                       likedProfiles.includes(profile.id) 
@@ -216,7 +216,7 @@ export default function MatrimonyDashboard() {
                       size={16} 
                       className={likedProfiles.includes(profile.id) ? 'fill-current' : ''} 
                     />
-                  </button>
+                  </button> */}
                 </div>
                 
                 {/* Content Section */}

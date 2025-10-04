@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Faq from './Faq'
 import Footer from '../Components/Footer'
 import Gallery from './Gallery'
@@ -34,6 +36,7 @@ function AppContent() {
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       {/* Conditionally Navbar */}
       {!shouldHideLayout && <Navbar />}
 
