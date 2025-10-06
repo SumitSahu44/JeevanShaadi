@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { getProfile, updateProfile, deleteProfile } = require('../controllers/profileController');
-// const { protect } = require('../middlewares/authMiddleware'); // JWT auth
+const { protect } = require('../middleware/authMiddleware');
 
 // Get user profile
 // GET /api/profile
-router.get('/',  getProfile);
+router.get('/',protect,  getProfile);
 
 // Update profile
 // PUT /api/profile
-router.put('/', updateProfile);
+router.put('/',protect, updateProfile);
 
 // Delete profile
 // DELETE /api/profile
