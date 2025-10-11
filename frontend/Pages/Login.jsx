@@ -14,11 +14,6 @@ export default function LoginForm() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    console.log('Login attempt:', { email, mobile, password });
-  };
-
-  // New async submit that sends POST to backend
   const submitLogin = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setError('');
@@ -31,13 +26,26 @@ export default function LoginForm() {
 
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:4000/api/login', {
+
+      // Backend URL from .env
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/login`;
+      console.log('Calling API:', apiUrl);
+
+      // Safe request body
+      const bodyData = {
+        ...(email && { email }),
+        ...(mobile && { mobile }),
+        password
+      };
+
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email || undefined, mobile: mobile || undefined, password })
+        body: JSON.stringify(bodyData)
       });
 
       const data = await res.json();
+
       if (!res.ok) {
         setError(data.message || 'Login failed');
         return;
@@ -49,13 +57,12 @@ export default function LoginForm() {
         try {
           localStorage.setItem('token', data.token);
         } catch (err) {
-          // ignore localStorage errors in strict environments
           console.warn('Could not save token to localStorage', err);
         }
       }
-      // show toast and redirect
+
       toast.success(successMessage);
-      // delay briefly to allow toast to appear
+
       setTimeout(() => {
         navigate('/dashboard');
       }, 500);
@@ -66,7 +73,6 @@ export default function LoginForm() {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-red-900 flex flex-col md:flex-row overflow-hidden relative">
       
