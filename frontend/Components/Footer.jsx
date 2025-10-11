@@ -27,9 +27,9 @@ const Footer = () => {
   };
 
   const contactInfo = [
-    { icon: <Phone className="w-5 h-5" />, text: '+91 98765 43210' },
-    { icon: <Mail className="w-5 h-5" />, text: 'support@jeevansadi.com' },
-    { icon: <MapPin className="w-5 h-5" />, text: 'Mumbai, Maharashtra, India' }
+    { icon: <Phone className="w-5 h-5" />, text: '+91 91115 24327' },
+    { icon: <Mail className="w-5 h-5" />, text: 'jeevanshaadi98@gmail.com' },
+    { icon: <MapPin className="w-5 h-5" />, text: 'Scheme number 140, Pipliyahana, Indore MP, India' }
   ];
 
   const socialLinks = [
