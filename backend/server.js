@@ -6,11 +6,19 @@ const express = require('express');
 const cors = require("cors");
 const connectDB = require('./config/mongoDb');
 
-
 const app = express();
 app.use(express.json());
+const allowedOrigins = ["http://localhost:5173","https://jeevan-shaadi-yrnu.vercel.app", "https://jeevanshaadi.com"];
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: function(origin, callback){
+    // origin null ho sakta hai (Postman ya server-to-server requests ke liye)
+    if(!origin || allowedOrigins.includes(origin)){
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 

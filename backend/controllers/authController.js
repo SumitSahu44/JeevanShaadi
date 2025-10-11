@@ -122,7 +122,7 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, mobile, password } = req.body || {};
-
+  console.log('Login request body:', req.body);
         if ((!email && !mobile) || !password) {
             return res.status(400).json({ message: "Email or Mobile and Password are required" });
         }
