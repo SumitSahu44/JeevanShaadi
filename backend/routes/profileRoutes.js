@@ -4,15 +4,12 @@ const { getProfile, updateProfile, deleteProfile } = require('../controllers/pro
 const { protect } = require('../middleware/authMiddleware');
 
 // Get user profile
-// GET /api/profile
-router.get('/',protect,  getProfile);
+router.get('/', protect, getProfile);
 
 // Update profile
-// PUT /api/profile
-router.put('/',protect, updateProfile);
+router.put('/', protect, updateProfile);
 
 // Delete profile
-// DELETE /api/profile
-router.delete('/', deleteProfile);
+router.delete('/', protect, deleteProfile);
 
 module.exports = router;

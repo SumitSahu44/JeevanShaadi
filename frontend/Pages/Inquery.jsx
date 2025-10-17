@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   X,
   User,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 const Inquiry = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // Profile For
@@ -296,6 +298,7 @@ const Inquiry = () => {
       if (!formData.community) newErrors.community = "Required";
       if (!formData.city) newErrors.city = "Required";
       if (!formData.state) newErrors.state = "Required";
+      if (!formData.country) newErrors.country = "Required";
     }
 
     if (step === 2) {
@@ -310,10 +313,7 @@ const Inquiry = () => {
         newErrors.password = "Min 6 characters";
     }
 
-    if (step === 4) {
-      if (!formData.profileImage)
-        newErrors.profileImage = "Please upload a profile photo";
-    }
+    // Removed profileImage validation for step 4
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -391,9 +391,10 @@ const Inquiry = () => {
       setErrorMsg("");
       console.log("Signup successful:", data);
 
+      // Redirect to dashboard after showing success message briefly
       setTimeout(() => {
-        alert("Profile created successfully!");
-      }, 1500);
+        navigate('/dashboard');
+      }, 2000);
     } catch (err) {
       const errorMessage =
         err.message || "Something went wrong. Please try again.";
@@ -653,7 +654,7 @@ const Inquiry = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   {renderField("City", "city", "text", null, true)}
                   {renderField("State", "state", "text", null, true)}
-                  {renderField("country", "country", "text", null, true)}
+                  {renderField("Country", "country", "text", null, true)}
                 </div>
               </div>
             )}

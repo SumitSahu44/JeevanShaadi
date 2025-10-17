@@ -54,10 +54,10 @@ const userSchema = new mongoose.Schema({
 
     // Profile Extras
     aboutYourself: { type: String, trim: true },
- profileImage: {
-    data: Buffer,
-    contentType: String
-},// store image URL or filename
+    profileImage: {
+        data: Buffer,
+        contentType: String
+    },// store image URL or filename
 
     // Auth Helpers
     resetPasswordToken: String,
@@ -66,4 +66,7 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Fix for OverwriteModelError: Check if model already exists before compiling
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+
+module.exports = User;
