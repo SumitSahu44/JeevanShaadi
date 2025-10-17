@@ -24,6 +24,7 @@ app.use(cors({
 
 
 // Connect to MongoDB Atlas
+
 connectDB();
 
 // Routes (example)
@@ -34,6 +35,7 @@ app.use('/api', authRoutes);
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/api/profile', profileRoutes);
 
-
+const matchesRoutes = require('./routes/matchesRoutes');
+app.use("/api/matches", matchesRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

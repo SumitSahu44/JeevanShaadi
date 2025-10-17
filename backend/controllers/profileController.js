@@ -2,15 +2,12 @@ const User = require('../models/user');
 
 // Get logged-in user profile
 exports.getProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select('-password'); // exclude password
-        if (!user) return res.status(404).json({ message: 'User not found' });
-
-        res.status(200).json(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
-    }
+  try {
+    const profiles = await User.find().select('-password'); // exclude password
+    res.status(200).json(profiles);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
 };
 
 // Update profile
