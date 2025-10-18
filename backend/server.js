@@ -8,7 +8,7 @@ const connectDB = require('./config/mongoDb');
 
 const app = express();
 app.use(express.json());
-const allowedOrigins = ["http://localhost:5173","https://jeevan-shaadi-yrnu.vercel.app", "https://jeevanshaadi.com"];
+const allowedOrigins = ["https://jeevan-shaadi-yrnu.vercel.app", "http://localhost:5173","https://jeevanshaadi.com"];
 
 app.use(cors({
   origin: function(origin, callback){
