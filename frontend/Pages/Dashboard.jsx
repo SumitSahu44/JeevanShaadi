@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapPin, Briefcase, GraduationCap, Mail, Home, Heart, User, Settings, MessageCircle, Cake, Ruler, Users, Globe, Phone, Calendar, Scale, Menu, X, Filter } from 'lucide-react';
+import { MapPin, Briefcase, GraduationCap, Mail, Home, Heart, User, Settings, MessageCircle, Cake, Ruler, Users, Globe, Phone, Calendar, Scale, Filter } from 'lucide-react';
 
 export default function MatrimonyDashboard() {
   const [profiles, setProfiles] = useState([]);
@@ -8,7 +8,6 @@ export default function MatrimonyDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [filters, setFilters] = useState({
@@ -45,7 +44,6 @@ export default function MatrimonyDashboard() {
     fetchMatches();
   }, []);
 
-  // Add this useEffect to scroll to top when detailed profile view opens
   useEffect(() => {
     if (selectedProfile) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -59,7 +57,7 @@ export default function MatrimonyDashboard() {
 
       const { email: userEmail, userId } = decodeToken(token);
 
-      const response = await fetch('http://localhost:4000/api/profile', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error('Failed to fetch profiles');
@@ -94,7 +92,7 @@ export default function MatrimonyDashboard() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('http://localhost:4000/api/matches', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/matches`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error('Failed to fetch matches');
@@ -162,70 +160,66 @@ export default function MatrimonyDashboard() {
   const renderCompactProfileCard = (profile, isCurrentUser = false) => (
     <div 
       onClick={() => setSelectedProfile(profile)}
-      className="group bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1 cursor-pointer"
+      className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-0.5 cursor-pointer"
     >
-      <div className="relative bg-gradient-to-br from-red-50 to-orange-50 pt-8 pb-16">
-        {/* Decorative Background Pattern */}
+      <div className="relative bg-gradient-to-br from-red-50 to-orange-50 pt-6 pb-12">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 right-4 w-20 h-20 bg-red-300 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-4 left-4 w-16 h-16 bg-orange-300 rounded-full blur-2xl"></div>
+          <div className="absolute top-2 right-2 w-16 h-16 bg-red-300 rounded-full blur-xl"></div>
+          <div className="absolute bottom-2 left-2 w-12 h-12 bg-orange-300 rounded-full blur-xl"></div>
         </div>
         
-        {/* Profile Image Circle */}
         <div className="relative flex justify-center">
           <div className="relative">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl ring-2 ring-red-100">
+            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg ring-2 ring-red-100">
               {profile.profileImage ? (
                 <img
                   src={profile.profileImage}
                   alt={`${profile.firstName} ${profile.lastName}`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center">
-                  <User className="w-16 h-16 text-red-300" />
+                  <User className="w-12 h-12 text-red-300" />
                 </div>
               )}
             </div>
             {isCurrentUser && (
-              <div className="absolute -top-2 -right-2 bg-red-900 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+              <div className="absolute -top-1 -right-1 bg-red-900 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-md">
                 You
               </div>
             )}
           </div>
         </div>
         
-        {/* Age and Gender Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-2">
-          <div className="px-3 py-1 bg-white/95 backdrop-blur-sm text-gray-900 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
-            <Users className="w-3 h-3 text-red-900" />
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          <div className="px-2 py-0.5 bg-white/95 backdrop-blur-sm text-gray-900 rounded-full text-xs font-bold shadow-sm flex items-center gap-1">
+            <Users className="w-2.5 h-2.5 text-red-900" />
             {profile.gender}
           </div>
           {profile.age && (
-            <div className="px-3 py-1 bg-white/95 backdrop-blur-sm text-gray-900 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
-              <Cake className="w-3 h-3 text-red-900" />
+            <div className="px-2 py-0.5 bg-white/95 backdrop-blur-sm text-gray-900 rounded-full text-xs font-bold shadow-sm flex items-center gap-1">
+              <Cake className="w-2.5 h-2.5 text-red-900" />
               {profile.age}
             </div>
           )}
         </div>
       </div>
 
-      {/* Profile Details */}
-      <div className="p-6 -mt-8 relative">
-        <div className="text-center mb-4">
-          <h3 className="text-xl font-bold text-gray-900 mb-1">
+      <div className="p-4 -mt-6 relative">
+        <div className="text-center mb-3">
+          <h3 className="text-lg font-bold text-gray-900 mb-1">
             {profile.firstName} {profile.lastName}
           </h3>
           {profile.occupation && (
-            <p className="text-sm text-gray-600 font-medium">{profile.occupation}</p>
+            <p className="text-xs text-gray-600 font-medium">{profile.occupation}</p>
           )}
         </div>
         
-        <div className="space-y-3 mb-5">
+        <div className="space-y-2 mb-4">
           {profile.education && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <GraduationCap className="w-4 h-4 text-red-900" />
+            <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-md hover:bg-red-50 transition-colors">
+              <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center flex-shrink-0">
+                <GraduationCap className="w-3 h-3 text-red-900" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-500 font-medium">Education</p>
@@ -234,9 +228,9 @@ export default function MatrimonyDashboard() {
             </div>
           )}
           {profile.maritalStatus && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Heart className="w-4 h-4 text-red-900" />
+            <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-md hover:bg-red-50 transition-colors">
+              <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center flex-shrink-0">
+                <Heart className="w-3 h-3 text-red-900" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-500 font-medium">Marital Status</p>
@@ -245,9 +239,9 @@ export default function MatrimonyDashboard() {
             </div>
           )}
           {profile.city && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-4 h-4 text-red-900" />
+            <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-md hover:bg-red-50 transition-colors">
+              <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-3 h-3 text-red-900" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-500 font-medium">Location</p>
@@ -256,9 +250,9 @@ export default function MatrimonyDashboard() {
             </div>
           )}
           {profile.height && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Ruler className="w-4 h-4 text-red-900" />
+            <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-md hover:bg-red-50 transition-colors">
+              <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center flex-shrink-0">
+                <Ruler className="w-3 h-3 text-red-900" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-500 font-medium">Height</p>
@@ -268,7 +262,7 @@ export default function MatrimonyDashboard() {
           )}
         </div>
         
-        <button className="w-full cursor-pointer py-3 bg-gradient-to-r from-red-900 to-red-800 text-white rounded-xl text-sm font-bold hover:from-red-800 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+        <button className="w-full py-2 bg-gradient-to-r from-red-900 to-red-800 text-white rounded-lg text-sm font-bold hover:from-red-800 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg">
           {isCurrentUser ? 'Edit Profile' : 'View Full Profile'}
         </button>
       </div>
@@ -321,28 +315,26 @@ export default function MatrimonyDashboard() {
       }));
 
     return (
-      <div className=" p-4 md:p-8 flex items-center justify-center">
-        <div className="max-w-6xl w-full mx-auto">
-          {/* Header with close button */}
-          <div className="flex justify-end mb-4">
+      <div className="p-2 md:p-4 flex items-center justify-center min-h-screen">
+        <div className="max-w-4xl w-full mx-auto">
+          <div className="flex justify-end mb-2">
             <button
               onClick={() => setSelectedProfile(null)}
-              className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+              className="p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
             >
-              <X className="w-6 h-6 text-gray-600 cursor-pointer" />
+              <Filter className="w-5 h-5 text-gray-600 cursor-pointer" />
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl h-[65rem]">
-            {/* Profile Header */}
-            <div className=" px-8 py-12 text-center relative">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="px-3 sm:px-6 py-4 sm:py-6 text-center relative">
               <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 right-10 w-32 h-32 bg-red-300 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-10 left-10 w-24 h-24 bg-orange-300 rounded-full blur-3xl"></div>
+                <div className="absolute top-6 right-6 w-24 h-24 bg-red-300 rounded-full blur-2xl"></div>
+                <div className="absolute bottom-6 left-6 w-20 h-20 bg-orange-300 rounded-full blur-2xl"></div>
               </div>
               
-              <div className="relative flex flex-col items-center gap-4">
-                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-2xl ring-4 ring-red-100">
+              <div className="relative flex flex-col items-center gap-2">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-xl ring-2 ring-red-100">
                   {profile.profileImage ? (
                     <img
                       src={profile.profileImage}
@@ -351,33 +343,32 @@ export default function MatrimonyDashboard() {
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center">
-                      <User className="w-20 h-20 text-red-300" />
+                      <User className="w-12 h-12 sm:w-16 sm:h-16 text-red-300" />
                     </div>
                   )}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
                     {profile.firstName} {profile.lastName}
                   </h2>
-                  <p className="text-gray-600 text-lg">{profile.occupation || 'Professional'}</p>
+                  <p className="text-gray-600 text-sm sm:text-base">{profile.occupation || 'Professional'}</p>
                 </div>
               </div>
             </div>
 
-            {/* Profile Details Grid */}
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(100vh-16rem)]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {profileFields.map(({ key, value, icon: Icon, label }) => (
-                  <div key={key} className="bg-gray-50 rounded-xl p-4 hover:bg-red-50 transition-colors">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-                        <Icon className="w-5 h-5 text-red-900" />
+                  <div key={key} className="bg-gray-50 rounded-lg p-2.5 sm:p-3 hover:bg-red-50 transition-colors">
+                    <div className="flex items-start gap-2">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-900" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                           {label}
                         </p>
-                        <p className="text-base font-bold text-gray-900 break-words">
+                        <p className="text-sm sm:text-base font-bold text-gray-900 break-words">
                           {value}
                         </p>
                       </div>
@@ -385,24 +376,6 @@ export default function MatrimonyDashboard() {
                   </div>
                 ))}
               </div>
-
-              {/* Action Buttons */}
-              {/* <div className="mt-8 flex flex-wrap gap-4 justify-center">
-                {isCurrentUser ? (
-                  <button className="px-8 py-3 bg-gradient-to-r from-red-900 to-red-800 text-white rounded-xl text-sm font-bold hover:from-red-800 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    Update Profile
-                  </button>
-                ) : (
-                  <>
-                    <button className="px-8 py-3 bg-gradient-to-r from-red-900 to-red-800 text-white rounded-xl text-sm font-bold hover:from-red-800 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-                      Send Interest
-                    </button>
-                    <button className="px-8 py-3 bg-white border-2 border-red-900 text-red-900 rounded-xl text-sm font-bold hover:bg-red-50 transition-all duration-300 shadow-lg hover:shadow-xl">
-                      Send Message
-                    </button>
-                  </>
-                )}
-              </div> */}
             </div>
           </div>
         </div>
@@ -412,9 +385,9 @@ export default function MatrimonyDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-red-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-red-900 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p className="text-gray-600">Loading profiles...</p>
         </div>
       </div>
@@ -423,8 +396,8 @@ export default function MatrimonyDashboard() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center bg-gray-50">
-        <div className="text-center bg-white p-8 rounded-lg shadow-sm">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center bg-white p-6 rounded-lg shadow-sm">
           <p className="text-red-600">{error}</p>
         </div>
       </div>
@@ -432,115 +405,60 @@ export default function MatrimonyDashboard() {
   }
 
   const tabs = [
-    { id: 'all', label: 'All Profiles', icon: Home },
-    { id: 'matches', label: 'Matches', icon: Heart },
-    { id: 'messages', label: 'Messages', icon: MessageCircle },
+    { id: 'all', label: 'Dashboard', icon: Home },
+    { id: 'matches', label: 'Partner Preferences', icon: Filter },
+    { id: 'messages', label: 'My Photos', icon: MessageCircle },
     { id: 'profile', label: 'My Profile', icon: User },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
-    <div className="flex bg-gray-50 justify-center">
-      {/* Show detailed profile view if a profile is selected */}
+    <div className="flex bg-gray-50 min-h-screen flex-col">
       {selectedProfile ? (
         renderDetailedProfileCard(selectedProfile, selectedProfile._id === currentUser?._id)
       ) : (
         <>
-          {/* Sidebar */}
-          <div className={`
-            fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg
-            transform transition-transform duration-300 ease-in-out
-            lg:relative lg:translate-x-0
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          `}>
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h1 className="text-xl font-bold text-red-900">MatriMatch</h1>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="lg:hidden p-2 rounded-md hover:bg-gray-100"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <nav className="mt-6 px-3 space-y-1">
-              {tabs.map(tab => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      setActiveTab(tab.id);
-                      setSidebarOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                      activeTab === tab.id
-                        ? 'bg-red-50 text-red-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
+          <div className="bg-white border-b border-gray-200">
+            <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+              <div className="flex flex-wrap items-center justify-start space-x-1 sm:space-x-3 lg:space-x-6 py-3">
+                {tabs.map(tab => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-3 px-1 border-b-2 font-medium text-xs sm:text-sm flex items-center gap-1 transition-colors duration-200 ${
+                        activeTab === tab.id
+                          ? 'border-red-500 text-red-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </nav>
-            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
-              <button className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-900 hover:bg-red-50 rounded-lg transition-colors">
-                <User className="w-5 h-5" />
-                <span>Logout</span>
-              </button>
-            </div>
           </div>
 
-          {/* Overlay for mobile */}
-          {sidebarOpen && (
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            />
-          )}
-
-          {/* Main Content */}
           <div className="flex-1 overflow-auto">
-            {/* Mobile Header */}
-            <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="p-2 rounded-md hover:bg-gray-100"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-              <h1 className="text-lg font-bold text-gray-900">MatriMatch</h1>
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                {currentUser?.profileImage ? (
-                  <img
-                    src={currentUser.profileImage}
-                    alt="Profile"
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  <User className="w-5 h-5 text-red-900" />
-                )}
-              </div>
-            </div>
-
-            <main className="p-4 md:p-8">
+            <main className="p-3 md:p-4">
               {activeTab === 'all' && (
                 <div className="max-w-7xl mx-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">All Profiles</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Dashboard</h2>
                   
-                  {/* Filter Section */}
-                  <div className="mb-6">
-                    <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                      <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4">
+                    <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
                         <button
                           onClick={() => setShowFilters(!showFilters)}
-                          className="flex items-center gap-2 px-4 py-2 bg-red-900 text-white rounded-md hover:bg-red-800 transition-colors text-sm font-medium"
+                          className="flex items-center gap-2 px-3 py-1.5 bg-red-900 text-white rounded-md hover:bg-red-800 transition-colors text-sm font-medium flex-1 sm:flex-none"
                         >
-                          <Filter className="w-4 h-4" />
+                          <Filter className="w-3.5 h-3.5" />
                           <span>Filters</span>
                           {activeFilterCount > 0 && (
-                            <span className="px-2 py-0.5 bg-white text-red-900 rounded-full text-xs font-bold">
+                            <span className="px-1.5 py-0.5 bg-white text-red-900 rounded-full text-xs font-bold">
                               {activeFilterCount}
                             </span>
                           )}
@@ -556,13 +474,13 @@ export default function MatrimonyDashboard() {
                       </div>
 
                       {showFilters && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-gray-200">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-gray-200">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Gender</label>
                             <select
                               value={filters.gender}
                               onChange={(e) => handleFilterChange('gender', e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             >
                               <option value="">All</option>
                               <option value="Male">Male</option>
@@ -571,79 +489,79 @@ export default function MatrimonyDashboard() {
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Min Age</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Min Age</label>
                             <input
                               type="number"
                               value={filters.minAge}
                               onChange={(e) => handleFilterChange('minAge', e.target.value)}
                               placeholder="e.g., 25"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Max Age</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Max Age</label>
                             <input
                               type="number"
                               value={filters.maxAge}
                               onChange={(e) => handleFilterChange('maxAge', e.target.value)}
                               placeholder="e.g., 35"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Education</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Education</label>
                             <input
                               type="text"
                               value={filters.education}
                               onChange={(e) => handleFilterChange('education', e.target.value)}
                               placeholder="e.g., MBA"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">City</label>
                             <input
                               type="text"
                               value={filters.city}
                               onChange={(e) => handleFilterChange('city', e.target.value)}
                               placeholder="e.g., Mumbai"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">State</label>
                             <input
                               type="text"
                               value={filters.state}
                               onChange={(e) => handleFilterChange('state', e.target.value)}
                               placeholder="e.g., Maharashtra"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Min Height (cm)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Min Height (ft)</label>
                             <input
                               type="number"
                               value={filters.minHeight}
                               onChange={(e) => handleFilterChange('minHeight', e.target.value)}
                               placeholder="e.g., 160"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Max Height (cm)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Max Height (ft)</label>
                             <input
                               type="number"
                               value={filters.maxHeight}
                               onChange={(e) => handleFilterChange('maxHeight', e.target.value)}
                               placeholder="e.g., 180"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
+                              className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-900 focus:border-transparent text-sm"
                             />
                           </div>
                         </div>
@@ -651,16 +569,15 @@ export default function MatrimonyDashboard() {
                     </div>
                   </div>
 
-                  {/* Profiles Grid */}
                   {applyFilters(profiles).length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-lg">
-                      <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <div className="text-center py-8 bg-white rounded-lg">
+                      <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-gray-500">
                         {activeFilterCount > 0 ? 'No profiles match your filters' : 'No profiles available'}
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {applyFilters(profiles).map(profile => (
                         <div key={profile._id}>
                           {renderCompactProfileCard(profile)}
@@ -673,15 +590,14 @@ export default function MatrimonyDashboard() {
 
               {activeTab === 'matches' && (
                 <div className="max-w-7xl mx-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Matches</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Partner Preferences</h2>
                   {matches.length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-lg">
-                      <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <div className="text-center py-8 bg-white rounded-lg">
+                      <Heart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-gray-500">No matches found yet</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2
-                     md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {matches.map(profile => (
                         <div key={profile._id}>
                           {renderCompactProfileCard(profile)}
@@ -692,34 +608,249 @@ export default function MatrimonyDashboard() {
                 </div>
               )}
 
-              {activeTab === 'profile' && currentUser && (
+              {activeTab === 'messages' && (
                 <div className="max-w-4xl mx-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h2>
-                  <div onClick={() => setSelectedProfile(currentUser)} className="cursor-pointer">
-                    {renderCompactProfileCard(currentUser, true)}
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">My Photos</h2>
+                  <div className="bg-white rounded-lg p-8 text-center">
+                    <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500">My Photos section coming soon.</p>
                   </div>
                 </div>
               )}
 
-              {activeTab === 'messages' && (
+              {activeTab === 'profile' && currentUser && (
                 <div className="max-w-4xl mx-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Messages</h2>
-                  <div className="bg-white rounded-lg p-12 text-center">
-                    <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">Messages section coming soon.</p>
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="bg-gradient-to-r from-gray-100 to-gray-50 p-3 sm:p-4 border-b">
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-shrink-0">
+                          <div className="w-40 h-48 border-4 border-white shadow-lg rounded-lg overflow-hidden">
+                            {currentUser.profileImage ? (
+                              <img
+                                src={currentUser.profileImage}
+                                alt={`${currentUser.firstName} ${currentUser.lastName}`}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center">
+                                <User className="w-16 h-16 text-red-300" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex-1">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                            {currentUser.firstName} {currentUser.lastName}
+                            <span className="text-base text-gray-500 font-normal ml-2">
+                              (JS{currentUser._id?.slice(-8)})
+                            </span>
+                          </h2>
+                          
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 mt-3">
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Height</span>
+                              <span className="text-gray-800 text-sm font-medium">: {currentUser.height} feet</span>
+                            </div>
+                            <div className="flex">
+                              <span className="text-gray-600 w-40">Religion / Community</span>
+                              <span className="text-gray-800 font-medium">: {currentUser.religion}, {currentUser.community}</span>
+                            </div>
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Marital Status</span>
+                              <span className="text-gray-800 text-sm font-medium">: {currentUser.maritalStatus}</span>
+                            </div>
+                            <div className="flex">
+                              <span className="text-gray-600 w-40">Location</span>
+                              <span className="text-gray-800 font-medium">: {currentUser.city}</span>
+                            </div>
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Profile For</span>
+                              <span className="text-gray-800 text-sm font-medium">: {currentUser.profileFor || 'Self'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-red-500 font-bold text-lg">About me.</h3>
+                   
+                      </div>
+                      <p className="text-gray-700 leading-relaxed text-sm">
+                        {currentUser.about || 'Hello, here is a little bit about myself. Please drop in a message if you would like to know more.'}
+                      </p>
+                    </div>
+
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-red-500 font-bold text-lg">Basics & Lifestyle</h3>
+                       
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Diet</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.diet || 'Not Specified'}</span>
+                        </div>
+                      <div className="flex">
+  <span className="text-sm text-gray-600 w-32">Date of Birth</span>
+  <span className="text-gray-800 text-sm">
+    : {currentUser.dob
+        ? `${new Date(currentUser.dob).getDate()}, ${new Date(currentUser.dob).toLocaleString('en-US', { month: 'long' })} ${new Date(currentUser.dob).getFullYear()}`
+        : 'Not Specified'}
+  </span>
+</div>
+
+                       
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Marital Status</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.maritalStatus}</span>
+                        </div>
+                       
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Height</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.height} feet</span>
+                        </div>
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Grew up in</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.country || 'India'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-red-500 font-bold text-lg">Religious Background</h3>
+                           
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Religion</span>
+                              <span className="text-gray-800 text-sm">: {currentUser.religion}</span>
+                            </div>
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Community</span>
+                              <span className="text-gray-800 text-sm">: {currentUser.community}</span>
+                            </div>
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Sub community</span>
+                              <span className="text-gray-800 text-sm">: {currentUser.subCommunity || 'Not Specified'}</span>
+                            </div>
+                           
+                           
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-red-500 font-bold text-lg">Astro Details</h3>
+                           
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex">
+                              <span className="text-sm text-gray-600 w-32">Date of Birth</span>
+                              <span className="text-gray-800 text-sm">: {currentUser.dob || 'Not Specified'}</span>
+                            </div>
+                         
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-red-500 font-bold text-lg">Family details</h3>
+                       
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Mother's Details</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.motherName || 'Enter Now'}</span>
+                        </div>
+                       
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Father's Details</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.fatherName || 'Enter Now'}</span>
+                        </div>
+                        
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Family Location</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.city}, {currentUser.state}, {currentUser.country}</span>
+                        </div>
+                       
+                      </div>
+                    </div>
+
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-red-500 font-bold text-lg">Education & Career</h3>
+                       
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Highest Qualification</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.highestQualification}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Working With</span>
+                          <span className="text-gray-800 text-sm">: Private Company</span>
+                        </div>
+                       
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Working As</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.workAs}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Annual Income</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.income || 'Not Specified'}</span>
+                        </div>
+                        
+                      </div>
+                    </div>
+
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-red-500 font-bold text-lg">Location of {currentUser.gender === 'Male' ? 'Groom' : 'Bride'}</h3>
+                       
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">Current Residence</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.city}, {currentUser.country}</span>
+                        </div>
+                       
+                        <div className="flex">
+                          <span className="text-sm text-gray-600 w-32">State Of Residence</span>
+                          <span className="text-gray-800 text-sm">: {currentUser.state}</span>
+                        </div>
+                       
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-gray-50 text-right">
+                      <button 
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        className="text-cyan-500 hover:underline text-sm font-medium"
+                      >
+                        Back to Top ▲
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
 
               {activeTab === 'settings' && (
                 <div className="max-w-4xl mx-auto">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Settings</h2>
-                  <div className="bg-white rounded-lg p-12 text-center">
-                    <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">Settings</h2>
+                  <div className="bg-white rounded-lg p-8 text-center">
+                    <Settings className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500">Settings section coming soon.</p>
                   </div>
                 </div>
-              )}
+              )}        
             </main>
           </div>
         </>
