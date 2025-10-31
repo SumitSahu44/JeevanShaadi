@@ -778,12 +778,12 @@ export default function MatrimonyDashboard() {
     const completionPercent = (Object.keys(currentUser).filter(key => requiredFields.includes(key) && currentUser[key]).length / requiredFields.length) * 100;
     return (
       <div className="bg-white border-b border-gray-200 p-4 md:p-6 mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Hello {currentUser.Name} (Profile ID: {profileId})</h2>
+        {/* <h2 className="text-2xl font-bold text-gray-900 mb-6">Hello {currentUser.Name} </h2> */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Sidebar */}
           <div className="flex flex-col items-center lg:items-start gap-4 w-full lg:w-auto">
             <div className="relative">
-              <div className="w-80 h-80 rounded-full overflow-hidden border-2 border-gray-200 shadow-md">
+              <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 shadow-md">
                 <img
                   src={currentUser.profileImage}
                   alt={currentUser.Name}
