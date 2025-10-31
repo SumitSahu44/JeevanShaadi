@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapPin, Briefcase, GraduationCap, Mail, Home, Heart, User, Settings, MessageCircle, Cake, Ruler, Users, Globe, Phone, Calendar, Scale, Filter } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function MatrimonyDashboard() {
   const [profiles, setProfiles] = useState([]);
@@ -53,7 +54,7 @@ export default function MatrimonyDashboard() {
   const fetchProfiles = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) throw new Error('User not logged in');
+      if (!token) throw new Error('You are not logged in');
 
       const { email: userEmail, userId } = decodeToken(token);
 
@@ -174,7 +175,7 @@ export default function MatrimonyDashboard() {
               {profile.profileImage ? (
                 <img
                   src={profile.profileImage}
-                  alt={`${profile.firstName} ${profile.lastName}`}
+                  alt={`${profile.Name} `}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
@@ -208,7 +209,7 @@ export default function MatrimonyDashboard() {
       <div className="p-4 -mt-6 relative">
         <div className="text-center mb-3">
           <h3 className="text-lg font-bold text-gray-900 mb-1">
-            {profile.firstName} {profile.lastName}
+            {profile.Name}
           </h3>
           {profile.occupation && (
             <p className="text-xs text-gray-600 font-medium">{profile.occupation}</p>
@@ -272,8 +273,8 @@ export default function MatrimonyDashboard() {
   const renderDetailedProfileCard = (profile, isCurrentUser = false) => {
     const fieldConfig = [
       { key: 'profileFor', label: 'PROFILE FOR', icon: Heart },
-      { key: 'firstName', label: 'FIRST NAME', icon: User },
-      { key: 'lastName', label: 'LAST NAME', icon: User },
+      { key: 'Name', label: 'Name', icon: User },
+      // { key: 'lastName', label: 'LAST NAME', icon: User },
       { key: 'gender', label: 'GENDER', icon: Users },
       { key: 'dob', label: 'DOB', icon: Calendar },
       { key: 'age', label: 'AGE', icon: Cake },
@@ -316,7 +317,7 @@ export default function MatrimonyDashboard() {
 
     return (
       <div className="p-2 md:p-4 flex items-center justify-center min-h-screen">
-        <div className="max-w-4xl w-full mx-auto">
+        <div className="max-w-3xl w-full mx-auto">
           <div className="flex justify-end mb-2">
             <button
               onClick={() => setSelectedProfile(null)}
@@ -338,7 +339,7 @@ export default function MatrimonyDashboard() {
                   {profile.profileImage ? (
                     <img
                       src={profile.profileImage}
-                      alt={`${profile.firstName} ${profile.lastName}`}
+                      alt={`${profile.Name} `}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -349,7 +350,7 @@ export default function MatrimonyDashboard() {
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
-                    {profile.firstName} {profile.lastName}
+                    {profile.Name}
                   </h2>
                   <p className="text-gray-600 text-sm sm:text-base">{profile.occupation || 'Professional'}</p>
                 </div>
@@ -397,8 +398,10 @@ export default function MatrimonyDashboard() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center bg-white p-6 rounded-lg shadow-sm">
-          <p className="text-red-600">{error}</p>
+        <div className="text-center bg-white p-6 rounded-lg ">
+        <img className='h-80 lg:h-[40rem]'  src='/not-login.png'></img>
+        <Link to={"/login"} className='z-10 px-10 py-3 bg-red-200 rounded-full text-red-900 font-semibold text-sm lg:text-lg '>Login</Link>
+          {/* <p className="text-red-600">{error}</p> */}
         </div>
       </div>
     );
@@ -609,7 +612,7 @@ export default function MatrimonyDashboard() {
               )}
 
               {activeTab === 'messages' && (
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-3xl mx-auto">
                   <h2 className="text-xl font-bold text-gray-900 mb-4">My Photos</h2>
                   <div className="bg-white rounded-lg p-8 text-center">
                     <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
@@ -619,7 +622,7 @@ export default function MatrimonyDashboard() {
               )}
 
               {activeTab === 'profile' && currentUser && (
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-3xl mx-auto">
                   <div className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="bg-gradient-to-r from-gray-100 to-gray-50 p-3 sm:p-4 border-b">
                       <div className="flex flex-col md:flex-row gap-4">
@@ -628,7 +631,7 @@ export default function MatrimonyDashboard() {
                             {currentUser.profileImage ? (
                               <img
                                 src={currentUser.profileImage}
-                                alt={`${currentUser.firstName} ${currentUser.lastName}`}
+                                alt={`${currentUser.Name} `}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -641,7 +644,7 @@ export default function MatrimonyDashboard() {
 
                         <div className="flex-1">
                           <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                            {currentUser.firstName} {currentUser.lastName}
+                            {currentUser.Name}
                             <span className="text-base text-gray-500 font-normal ml-2">
                               (JS{currentUser._id?.slice(-8)})
                             </span>
@@ -653,15 +656,19 @@ export default function MatrimonyDashboard() {
                               <span className="text-gray-800 text-sm font-medium">: {currentUser.height} feet</span>
                             </div>
                             <div className="flex">
-                              <span className="text-gray-600 w-40">Religion / Community</span>
-                              <span className="text-gray-800 font-medium">: {currentUser.religion}, {currentUser.community}</span>
+                              <span className="text-gray-600 w-32">Religion </span>
+                              <span className="text-gray-800 font-medium">: {currentUser.religion}</span>
+                            </div>
+                              <div className="flex">
+                              <span className="text-gray-600 w-32"> Community</span>
+                              <span className="text-gray-800 font-medium">:{currentUser.community}</span>
                             </div>
                             <div className="flex">
                               <span className="text-sm text-gray-600 w-32">Marital Status</span>
                               <span className="text-gray-800 text-sm font-medium">: {currentUser.maritalStatus}</span>
                             </div>
                             <div className="flex">
-                              <span className="text-gray-600 w-40">Location</span>
+                              <span className="text-gray-600 w-32">Location</span>
                               <span className="text-gray-800 font-medium">: {currentUser.city}</span>
                             </div>
                             <div className="flex">
@@ -843,7 +850,7 @@ export default function MatrimonyDashboard() {
               )}
 
               {activeTab === 'settings' && (
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-3xl mx-auto">
                   <h2 className="text-xl font-bold text-gray-900 mb-4">Settings</h2>
                   <div className="bg-white rounded-lg p-8 text-center">
                     <Settings className="w-12 h-12 text-gray-300 mx-auto mb-3" />

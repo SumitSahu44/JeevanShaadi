@@ -1,11 +1,8 @@
-
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
-
 const cors = require("cors");
 const connectDB = require('./config/mongoDb');
-
 const app = express();
 app.use(express.json());
 const allowedOrigins = ["https://jeevan-shaadi-yrnu.vercel.app", "http://localhost:5173","https://jeevanshaadi.com"];
@@ -22,7 +19,7 @@ app.use(cors({
   credentials: true
 }));
 
-
+ 
 // Connect to MongoDB Atlas
 
 connectDB();
@@ -30,7 +27,6 @@ connectDB();
 // Routes (example)
 const authRoutes = require('./routes/authRoutes');
 app.use('/api', authRoutes);
-
 
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/api/profile', profileRoutes);

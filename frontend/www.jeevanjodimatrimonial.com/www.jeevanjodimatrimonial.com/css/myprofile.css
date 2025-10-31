@@ -1,0 +1,316 @@
+.table ul {
+    padding: 0;
+    margin: 0;
+}
+
+.table li {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.25em;
+    width: 100%;
+}
+
+.table li a:link,
+.table li a:visited {
+    display: block;
+    border: 0;
+    color: #c55500;
+    font-size: 12px;
+}
+
+.table li a:hover,
+.table li a:focus,
+.table li a:active {
+    color: #730800;
+    background: transparent;
+}
+
+.table li:before,
+.table li:after,
+.table li a:before,
+.table li a:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+}
+
+.table li a:before,
+.table li a:after {
+    margin: -8px 0 0;
+    background: #c55500;
+}
+
+.table li a:hover:before,
+.table li a:focus:before,
+.table li a:active:before {
+    background: #730800;
+}
+
+/*.bg_tr{ background:none;}
+*/
+
+.greybdr {
+    border: 1px solid #e4e4e3;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 1px 1px 6px #888888;
+    border: 3px solid #fff;
+}
+
+.msgbox {
+    border: 1px solid #e4e4e3;
+    background: #fff;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.linehe {
+    line-height: 20px;
+}
+
+.greybg {
+    background-color: #e4e4e3;
+    box-shadow: 1px 1px 6px #888888;
+    border: 3px solid #fff;
+}
+
+.greyback {
+    background-color: #e4e4e3;
+}
+
+.greyborder {
+    background-color: #ffffff;
+    box-shadow: 1px 1px 6px #888888;
+    border: 3px solid #e4e4e3;
+}
+
+.img_rt_padding {
+    padding-right: 30px;
+}
+
+.sr-only {
+    /*position: absolute;*/
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.sr-only {
+    /*position: absolute;*/
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+progress {
+    display: inline-block;
+    vertical-align: baseline
+}
+
+@-webkit-keyframes progress-bar-stripes {
+    from {
+        background-position: 40px 0
+    }
+    to {
+        background-position: 0 0
+    }
+}
+
+@-o-keyframes progress-bar-stripes {
+    from {
+        background-position: 40px 0
+    }
+    to {
+        background-position: 0 0
+    }
+}
+
+@keyframes progress-bar-stripes {
+    from {
+        background-position: 40px 0
+    }
+    to {
+        background-position: 0 0
+    }
+}
+
+.progress {
+    height: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1)
+}
+
+.progress-bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    background-color: #337ab7;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);
+    -webkit-transition: width .6s ease;
+    -o-transition: width .6s ease;
+    transition: width .6s ease
+}
+
+.progress-striped .progress-bar,
+.progress-bar-striped {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    -webkit-background-size: 40px 40px;
+    background-size: 40px 40px
+}
+
+.progress.active .progress-bar,
+.progress-bar.active {
+    -webkit-animation: progress-bar-stripes 2s linear infinite;
+    -o-animation: progress-bar-stripes 2s linear infinite;
+    animation: progress-bar-stripes 2s linear infinite
+}
+
+.progress-bar-success {
+    background-color: #5cb85c
+}
+
+.progress-striped .progress-bar-success {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+}
+
+.progress-bar-info {
+    background-color: #5bc0de
+}
+
+.progress-striped .progress-bar-info {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+}
+
+.progress-bar-warning {
+    background-color: #f0ad4e
+}
+
+.progress-striped .progress-bar-warning {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+}
+
+.progress-bar-danger {
+    background-color: #d9534f
+}
+
+.progress-striped .progress-bar-danger {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+}
+
+.lnheight {
+    line-height: 34px;
+}
+
+.hgt {
+    height: 210px;
+}
+
+.filters ul {
+    display: inline-block;
+    margin-right: -10px;
+    margin-left: 20px;
+    border-bottom: 1px solid #FFFFFF;
+    background-color: #E4E4E3;
+}
+
+.filters>li a {
+    position: relative;
+    margin-right: 1px;
+    color: #FFFFFF;
+    float: left;
+    font: 400 19px/22px 'Marvel', sans-serif;
+    text-align: center;
+    text-transform: capitalize;
+    padding: 10px;
+    border-right: 1px solid #FFFFFF;
+    background-color: #713e8b;
+}
+
+/*.filters > li  a{ color:#ffffff; text-decoration:none;}*/
+
+.filters>li:hover {
+    background-color: #f04d46
+}
+
+.filters>li a:hover,
+.filters>li a:focus,
+.filters>li a:active {
+    background-color: #f04d46;
+    padding: 10px;
+}
+
+.pad_rt {
+    padding: 5px 10px 10px 5px;
+}
+
+.Searchborder {
+    border-bottom: dashed 1px #f04d46;
+}
+
+.profile_minht {
+    min-height: 300px;
+    padding: 3px;
+}
+
+.pad_1 {
+    padding: 10px;
+}
+
+.org {
+    color: #f04d46;
+}
+
+.white1 {
+    color: #FFFFFF;
+}
+
+.icon_mypr {
+    padding: 3px;
+    color: #713e8b;
+}
+
+.pad_2 {
+    padding: 3px;
+}
+
+.fr_search {
+    margin: 10px 10px 10px 10px;
+    vertical-align: baseline;
+}
+
+.loader_prmypr_page {
+    font-size: 36px;
+    color: #FFFFFF;
+}

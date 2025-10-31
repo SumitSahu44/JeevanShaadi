@@ -10,10 +10,10 @@ const upload = multer({ storage });
 // ===== Signup =====
 const signup = async (req, res) => {
   try {
-    const { profileFor, firstName, lastName, gender, dob, maritalStatus, height, diet,
-      religion, community, subCommunity, livingIn, city, state, liveWithFamily,
-      fatherName, motherName, familyMembers, highestQualification, collegeName,
-      workDetails, workAs, currentCompany, income, languagesKnown, email, mobile,
+    const { profileFor, Name, gender, dob, maritalStatus, height, weight, diet,
+      religion, community, subCommunity, noCasteBar, city, state, country, liveWithFamily,
+      familyBackground, highestQualification,
+      workDetails, income, motherTongue, email, mobile,
       password, aboutYourself } = req.body;
 
     const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
@@ -27,17 +27,15 @@ const signup = async (req, res) => {
     }
 
     const newUser = await User.create({
-      profileFor, firstName, lastName, gender, dob, maritalStatus, height, diet,
-      religion, community, subCommunity, livingIn, city, state, liveWithFamily,
-      fatherName, motherName, familyMembers, highestQualification, collegeName,
-      workDetails, workAs, currentCompany, income,
-      languagesKnown: languagesKnown ? languagesKnown.split(",") : [],
-      email, mobile, password: hashedPassword, aboutYourself, profileImage
+      profileFor, Name, gender, dob, maritalStatus, height, weight, diet,
+      religion, community, subCommunity, noCasteBar: noCasteBar === 'true', city, state, livingIn: country, liveWithFamily: liveWithFamily === 'true',
+      familyBackground, highestQualification,
+      workDetails, income, motherTongue, email, mobile, password: hashedPassword, aboutYourself, profileImage
     });
 
     res.status(201).json({
       message: "User registered successfully",
-      user: { _id: newUser._id, firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email }
+      user: { _id: newUser._id,Name: newUser.Name, email: newUser.email }
     });
 
   } catch (error) {
@@ -66,7 +64,7 @@ const login = async (req, res) => {
 
     res.json({
       message: "Login successful",
-      user: { _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, profileImage: profileImageBase64 },
+      user: { _id: user._id, Name: user.Name,  email: user.email, profileImage: profileImageBase64 },
       token
     });
 
