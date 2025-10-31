@@ -244,21 +244,7 @@ export default function LoginForm() {
               </div>
             </div>
 
-            {/* Or Mobile */}
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
-                Or Mobile
-              </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
-                  className="w-full pl-3 pr-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent transition-all"
-                  placeholder="Enter your mobile number"
-                />
-              </div>
-            </div>
+          
 
             {/* Password */}
             <div>
@@ -284,16 +270,7 @@ export default function LoginForm() {
               </div>
             </div>
 
-            {/* Remember & Forgot */}
-            <div className="flex items-center justify-between pt-1">
-              {/* <label className="flex items-center cursor-pointer">
-                <input type="checkbox" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-900 border-gray-300 rounded focus:ring-red-900" />
-                <span className="ml-2 text-xs sm:text-sm text-gray-600">Remember me</span>
-              </label> */}
-              <button className="text-xs sm:text-sm text-red-900 hover:text-red-800 font-medium">
-                Forgot password?
-              </button>
-            </div>
+         
 
             {/* Submit Button */}
             <button
@@ -307,26 +284,7 @@ export default function LoginForm() {
             {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
             {success && <p className="text-sm text-green-600 mt-2">{success}</p>}
 
-            {/* Divider */}
-            <div className="relative my-4 md:my-5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-xs sm:text-sm">
-                <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-              </div>
-            </div>
-
-            {/* Social Buttons */}
-            <div className="grid grid-cols-2 gap-2 md:gap-3">
-              <button className="flex items-center justify-center py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all transform hover:scale-105">
-                <span className="text-xs sm:text-sm font-medium text-gray-700">Google</span>
-              </button>
-              <button className="flex items-center justify-center py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all transform hover:scale-105">
-                <span className="text-xs sm:text-sm font-medium text-gray-700">GitHub</span>
-              </button>
-            </div>
-
+         
             {/* Registration Link */}
             <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
               Don't have an account? 

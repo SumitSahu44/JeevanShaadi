@@ -7,9 +7,9 @@ const app = express();
 app.use(express.json());
 const allowedOrigins = ["https://jeevan-shaadi-yrnu.vercel.app", "http://localhost:5173","https://jeevanshaadi.com"];
 
-app.use(cors({
+app.use(cors({ 
   origin: function(origin, callback){
-    // origin null ho sakta hai (Postman ya server-to-server requests ke liye)
+    // origin null ho sakta hai (Postman ya server-tserver requests keoy- lie)
     if(!origin || allowedOrigins.includes(origin)){
       callback(null, true);
     } else {
