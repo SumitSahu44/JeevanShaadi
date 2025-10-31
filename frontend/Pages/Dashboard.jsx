@@ -828,24 +828,17 @@ export default function MatrimonyDashboard() {
               </div>
               <div className="mb-3 flex items-center justify-between">
                 <label className="text-xs font-medium text-gray-700">Mobile No.</label>
-                {currentUser.phone ? (
+                {currentUser.mobile ? (
                   <span className="text-sm text-green-600 flex items-center gap-1">
-                    {currentUser.phone} <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    {currentUser.mobile} <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                   </span>
                 ) : (
                   <span className="text-sm text-gray-500">Not Verified</span>
                 )}
               </div>
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-gray-700">Account Type</label>
-                <span className="text-sm font-medium text-gray-900">{currentUser.accountType || 'Free'}</span>
-              </div>
+             
             </div>
-            {/* Membership Banner */}
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-800 mb-1">Purchase Our Membership Plan and get better Response</p>
-              <p className="text-sm text-red-800">View verified contact details and Write Direct Messages to members</p>
-            </div>
+           
           </div>
         </div>
       </div>
