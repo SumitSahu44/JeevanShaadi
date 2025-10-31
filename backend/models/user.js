@@ -8,9 +8,8 @@ const userSchema = new mongoose.Schema({
     },
 
     // Basic Info
-    firstName: { type: String, required: true, trim: true },
-    lastName: { type: String, required: true, trim: true },
-    gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
+    Name: { type: String, required: true, trim: true },
+    gender: { type: String, enum: ['Male', 'Female'], required: true },
     dob: { type: Date, required: true },
     maritalStatus: {
         type: String,
@@ -18,12 +17,14 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     height: { type: String, required: true }, // Example: "5ft 7in" or "170cm"
+    weight: { type: String },
     diet: { type: String, enum: ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan', 'Other'], default: 'Other' },
     
     // Religion & Community
     religion: { type: String, required: true },
     community: { type: String, required: true },
-    subCommunity: { type: String, default: 'Not Particular' },
+    subCommunity: { type: String },
+    noCasteBar: { type: Boolean, default: false },
 
     // Location
     livingIn: { type: String },
@@ -32,20 +33,15 @@ const userSchema = new mongoose.Schema({
 
     // Family
     liveWithFamily: { type: Boolean, default: true },
-    fatherName: { type: String },
-    motherName: { type: String },
-    familyMembers: { type: Number, default: 0 },
+    familyBackground: { type: String },
 
     // Education & Career
     highestQualification: { type: String, required: true },
-    collegeName: { type: String },
     workDetails: { type: String, enum: ['Private', 'Government', 'Business', 'Self Employed', 'Not Working'] },
-    workAs: { type: String }, // e.g., "Software Developer", "HR"
-    currentCompany: { type: String },
     income: { type: String }, // e.g., "5 LPA", "10k/month"
 
     // Languages
-    languagesKnown: [{ type: String }],
+    motherTongue: { type: String },
 
     // Contact & Login
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -53,7 +49,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
 
     // Profile Extras
-    aboutYourself: { type: String, trim: true },
+    aboutYourself: { type: String, required: true, trim: true },
     profileImage: {
         data: Buffer,
         contentType: String

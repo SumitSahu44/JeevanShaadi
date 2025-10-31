@@ -20,8 +20,16 @@ function calculateMatchScore(user, profile) {
     if (user.state === profile.state) score += 5;
     if (user.diet === profile.diet) score += 5;
 
-    const commonLanguages = profile.languagesKnown.filter(lang => user.languagesKnown.includes(lang));
-    score += commonLanguages.length * 2;
+    // Updated for new schema: motherTongue (single string) instead of languagesKnown array
+    if (user.motherTongue === profile.motherTongue) score += 10;
+
+    // Added new fields from schema for better matching
+    if (user.highestQualification === profile.highestQualification) score += 10;
+    if (user.workDetails === profile.workDetails) score += 10;
+    if (user.liveWithFamily === profile.liveWithFamily) score += 5;
+
+    // Optional: For noCasteBar - bonus if both are open to no caste preference
+    if (user.noCasteBar && profile.noCasteBar) score += 10;
 
     return score;
 }

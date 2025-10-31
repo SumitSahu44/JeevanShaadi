@@ -1,0 +1,1 @@
+No Content: https://www.jeevanjodimatrimonial.com/js/jquery-2.2.4.js
