@@ -1,6 +1,12 @@
+// models/user.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    userId: {                     // NEW
+        type: String,
+        unique: true,
+        required: true
+    },
     profileFor: {
         type: String,
         enum: ['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend'],
@@ -16,10 +22,10 @@ const userSchema = new mongoose.Schema({
         enum: ['Never Married', 'Divorced', 'Widowed', 'Separated'],
         required: true
     },
-    height: { type: String, required: true }, // Example: "5ft 7in" or "170cm"
+    height: { type: String, required: true },
     weight: { type: String },
     diet: { type: String, enum: ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan', 'Other'], default: 'Other' },
-    
+
     // Religion & Community
     religion: { type: String, required: true },
     community: { type: String, required: true },
@@ -31,14 +37,21 @@ const userSchema = new mongoose.Schema({
     city: { type: String, required: true },
     state: { type: String, required: true },
 
-    // Family
+    // Family (NEW FIELDS)
     liveWithFamily: { type: Boolean, default: true },
     familyBackground: { type: String },
+    motherOccupation: { type: String },               // dropdown
+    fatherOccupation: { type: String },               // dropdown
+    siblings: { type: String },                       // free text
+    maritalStatusFamily: {                            // renamed to avoid clash with personal maritalStatus
+        type: String,
+        enum: ['Married', 'Unmarried']
+    },
 
     // Education & Career
     highestQualification: { type: String, required: true },
     workDetails: { type: String, enum: ['Private', 'Government', 'Business', 'Self Employed', 'Not Working'] },
-    income: { type: String }, // e.g., "5 LPA", "10k/month"
+    income: { type: String },
 
     // Languages
     motherTongue: { type: String },
@@ -53,7 +66,7 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         data: Buffer,
         contentType: String
-    },// store image URL or filename
+    },
 
     // Auth Helpers
     resetPasswordToken: String,
@@ -62,7 +75,6 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// Fix for OverwriteModelError: Check if model already exists before compiling
+// Ensure model is compiled only once
 const User = mongoose.models.User || mongoose.model('User', userSchema);
-
 module.exports = User;

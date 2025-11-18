@@ -8,15 +8,26 @@ import Hero from './Hero'
 import HowitWorks from './HowitWorks'
 import PersonalizedMatch from './PersonalizedMatch'
 import Match from './Match'
-import WhyChoose from './WhyChoose'
+import WhyChoose from './WhyChoose' 
+
 import Testimonials from './Testimonials'
 import FixedBackgroundHero from './FixedBackground'
 import Navbar from '../Components/Navbar'
 import About from "../Pages/About"
 import Login from "../Pages/Login"
 import Inquery from "../Pages/Inquery"
+
 import Dashboard from "../Pages/Dashboard"
 import Inquiry from "../Pages/Inquery"
+import EditProfile from "../Pages/EditProfile"
+
+// Admin imports
+import AdminRoute from '../Components/admin/AdminRoute'
+import AdminLogin from '../Pages/admin/Login'
+import AdminDashboard from '../Pages/admin/AdminDashboard'
+import AdminUsers from '../Pages/admin/Users'
+import AdminInquiries from '../Pages/admin/Inquiries'
+// import ScrollToTop from "../../../EdmireAi/EdmireAi/src/ScrollToTop"
 
 function App() {
   return (
@@ -29,10 +40,17 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
-  // Yahan par jo bhi route me Navbar/Footer nahi chahiye unko list karo
-  const hideLayoutRoutes = ["/login", "/inquery"];
+  // Routes where we don't want to show the main Navbar and Footer
+  const hideLayoutRoutes = [
+    "/login", 
+    "/inquery",
+    "/admin",
+    "/admin/login",
+    "/admin/users",
+    "/admin/dashboard"
+  ];
 
-  const shouldHideLayout = hideLayoutRoutes.includes(location.pathname);
+  const shouldHideLayout = hideLayoutRoutes.some(route => location.pathname.startsWith(route));
 
   return (
     <>
@@ -41,10 +59,23 @@ function AppContent() {
       {!shouldHideLayout && <Navbar />}
 
       <Routes>
-        {/* Home Page */}
+        {/* Admin Routes */}
+        <Route path="/admin">
+          <Route path="login" element={<AdminLogin />} />
+          <Route element={<AdminRoute />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="inquiries" element={<AdminInquiries />} />
+          </Route>
+        </Route>
+
+        {/* Main Routes */}
         <Route path="/" element={
           <>
+      
             <Hero />
+
             <WhyChoose />
             <HowitWorks />
             <PersonalizedMatch />
@@ -55,11 +86,12 @@ function AppContent() {
             <Testimonials />
           </>
         } />
-
+    {/* <ScrollToTop/> */}
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/inquery" element={<Inquiry />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/edit-profile/:id" element={<EditProfile />} />
       </Routes>
 
       {/* Conditionally Footer */}
