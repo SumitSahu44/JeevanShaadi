@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Sparkles, User } from 'lucide-react';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [mobile, setMobile] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,24 +18,18 @@ export default function LoginForm() {
     setError('');
     setSuccess('');
 
-    if ((!email && !mobile) || !password) {
-      setError('Email or mobile and password are required');
+    if (!identifier || !password) {
+      setError('User ID, Email or Mobile and password are required');
       return;
     }
 
     try {
       setLoading(true);
 
-      // Backend URL from .env
       const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/login`;
       console.log('Calling API:', apiUrl);
 
-      // Safe request body
-      const bodyData = {
-        ...(email && { email }),
-        ...(mobile && { mobile }),
-        password
-      };
+      const bodyData = { identifier, password };
 
       const res = await fetch(apiUrl, {
         method: 'POST',
@@ -56,8 +49,9 @@ export default function LoginForm() {
       if (data.token) {
         try {
           localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
         } catch (err) {
-          console.warn('Could not save token to localStorage', err);
+          console.warn('Could not save to localStorage', err);
         }
       }
 
@@ -73,11 +67,12 @@ export default function LoginForm() {
       setLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen bg-red-900 flex flex-col md:flex-row overflow-hidden relative">
       
-      {/* Gallery Section */}
-      <div className="w-full md:w-1/2 relative overflow-hidden min-h-screen bg-gradient-to-br from-red-900 to-red-950">
+      {/* ==================== GALLERY SECTION - HIDDEN ON MOBILE ==================== */}
+      <div className="hidden md:block w-full md:w-1/2 relative overflow-hidden min-h-screen bg-gradient-to-br from-red-900 to-red-950">
         
         {/* Animated Gradient Mesh Background */}
         <div className="absolute inset-0">
@@ -187,9 +182,9 @@ export default function LoginForm() {
                 </div>
               </div>
             </div>
-
           </div>
 
+          {/* CSS Animations */}
           <style jsx>{`
             @keyframes blob {
               0% { transform: translate(0px, 0px) scale(1); }
@@ -210,7 +205,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Form Section */}
+      {/* ==================== FORM SECTION - FULL WIDTH ON MOBILE ==================== */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gray-50 min-h-screen">
         <div className="w-full max-w-md py-8 md:py-0">
           
@@ -220,31 +215,30 @@ export default function LoginForm() {
               Sign in
             </h1>
             <p className="text-sm sm:text-base text-gray-600">
-              Welcome back! Please enter your details
+              Use your <strong>User ID (JSxxxxx)</strong>, Email or Mobile
             </p>
           </div>
 
           {/* Form */}
-          <div className="space-y-3 md:space-y-4">
+          <form onSubmit={submitLogin} className="space-y-3 md:space-y-4">
             
-            {/* Email */}
+            {/* Identifier Field */}
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
-                Email
+                User ID, Email or Mobile
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value.trim())}
                   className="w-full pl-10 sm:pl-11 pr-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent transition-all"
-                  placeholder="Enter your email"
+                  placeholder="JS100001 or email@example.com or 98XXXXXXXX"
+                  required
                 />
               </div>
             </div>
-
-          
 
             {/* Password */}
             <div>
@@ -259,6 +253,7 @@ export default function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 sm:pl-11 pr-10 sm:pr-11 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent transition-all"
                   placeholder="Enter your password"
+                  required
                 />
                 <button
                   type="button"
@@ -270,12 +265,11 @@ export default function LoginForm() {
               </div>
             </div>
 
-         
-
             {/* Submit Button */}
             <button
-              onClick={submitLogin}
-              className="w-full bg-red-900 text-white py-2.5 sm:py-3 text-sm sm:text-base rounded-xl font-medium hover:bg-red-800 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl mt-2"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-red-900 text-white py-2.5 sm:py-3 text-sm sm:text-base rounded-xl font-medium hover:bg-red-800 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -284,22 +278,17 @@ export default function LoginForm() {
             {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
             {success && <p className="text-sm text-green-600 mt-2">{success}</p>}
 
-         
             {/* Registration Link */}
             <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
               Don't have an account? 
-              <a 
-                href="/inquery"
-                className="text-red-900 font-medium hover:text-red-800 ml-1"
-              >
+              <a href="/inquery" className="text-red-900 font-medium hover:text-red-800 ml-1">
                 Sign up for free
               </a>
             </p>
-          </div>
+          </form>
 
         </div>
       </div>
-
     </div>
   );
 }

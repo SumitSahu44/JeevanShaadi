@@ -1,15 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { getProfile, updateProfile, deleteProfile } = require('../controllers/profileController');
+const {
+  getMyProfile,      // नया
+  updateProfile,
+  deleteProfile,
+  getAllProfiles,    // नया
+} = require('../controllers/profileController');
 const { protect } = require('../middleware/authMiddleware');
 
-// Get user profile
-router.get('/', protect, getProfile);
+// अपना प्रोफाइल
+router.get('/me', protect, getMyProfile);
 
-// Update profile
+// सभी यूज़र्स (matches के लिए)
+router.get('/all', protect, getAllProfiles);
+
+// अपडेट & डिलीट
 router.put('/', protect, updateProfile);
-
-// Delete profile
 router.delete('/', protect, deleteProfile);
 
 module.exports = router;

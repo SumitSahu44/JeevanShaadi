@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  MagnifyingGlassIcon,
-  ShieldCheckIcon,
-  ChatBubbleBottomCenterTextIcon,
-  StarIcon
-} from "@heroicons/react/24/outline";
-import { User2Icon } from 'lucide-react';
 
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -17,7 +10,7 @@ const FAQ = () => {
       answer:
         "You can create your profile by signing up, adding your personal details, preferences, and uploading a profile picture. Make sure all information is accurate to get the best matches.",
       icon: (
-        <User2Icon className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-900 p-2 text-white" />
+        <span className="text-2xl sm:text-3xl">👤</span>
       )
     },
     {
@@ -25,7 +18,7 @@ const FAQ = () => {
       answer:
         "Use advanced search filters based on age, religion, location, education, and interests to find the most compatible partners.",
       icon: (
-        <MagnifyingGlassIcon className="w-8 h-8 sm:w-10 sm:h-10 bg-red-900 p-2 rounded-full text-white" />
+        <span className="text-2xl sm:text-3xl">🔍</span>
       )
     },
     {
@@ -33,7 +26,7 @@ const FAQ = () => {
       answer:
         "Absolutely. We ensure that all your data is securely stored and encrypted. Only verified users can view your profile.",
       icon: (
-        <ShieldCheckIcon className="w-8 h-8 sm:w-10 sm:h-10 bg-red-900 p-2 rounded-full text-white" />
+        <span className="text-2xl sm:text-3xl">🛡️</span>
       )
     },
     {
@@ -41,7 +34,7 @@ const FAQ = () => {
       answer:
         "You can send interests, messages, or schedule a chat with verified profiles directly from your dashboard.",
       icon: (
-        <ChatBubbleBottomCenterTextIcon className="w-8 h-8 sm:w-10 sm:h-10 bg-red-900 p-2 rounded-full text-white" />
+        <span className="text-2xl sm:text-3xl">💬</span>
       )
     },
     {
@@ -49,7 +42,7 @@ const FAQ = () => {
       answer:
         "Premium members get highlighted profiles, unlimited messaging, advanced filters, and personalized matchmaking recommendations.",
       icon: (
-        <StarIcon className="w-8 h-8 sm:w-10 sm:h-10 bg-red-900 p-2 rounded-full text-white" />
+        <span className="text-2xl sm:text-3xl">⭐</span>
       )
     }
   ];
