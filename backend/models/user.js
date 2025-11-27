@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     },
 
     // Basic Info
-    Name: { type: String, required: true, trim: true },
+    Name: { type: String,  trim: true },
     gender: { type: String, enum: ['Male', 'Female'], required: true },
     dob: { type: Date, required: true },
     maritalStatus: {
@@ -57,12 +57,14 @@ const userSchema = new mongoose.Schema({
     motherTongue: { type: String },
 
     // Contact & Login
-    email: { type: String, required: true, unique: true, lowercase: true },
-    mobile: { type: String, required: true, unique: true },
+    email: { type: String,  unique: true, lowercase: true },
+    mobile: { type: String,  unique: true },
     password: { type: String, required: true },
-
+// Add these to your userSchema
+isOnline: { type: Boolean, default: false },
+chatRooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ChatChat' }] , // Ref to new Chat model
     // Profile Extras
-    aboutYourself: { type: String, required: true, trim: true },
+    aboutYourself: { type: String,  trim: true },
     profileImage: {
         data: Buffer,
         contentType: String

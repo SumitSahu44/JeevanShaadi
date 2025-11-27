@@ -214,10 +214,11 @@ const Footer = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="text-red-200 text-center md:text-left"
+              className="text-red-100 text-center md:text-left"
             >
               © {currentYear} JeevanSadi.com. All rights reserved. Made with{' '}
               <Heart className="w-4 h-4 inline text-red-400 fill-red-400" /> in India
+              <p>Designed and Developed by <a href='https://digitalsuccesssolutions.in/' className='underline'>  Digital Success Solutions.</a></p>
             </motion.p>
             
             <motion.div

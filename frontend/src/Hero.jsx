@@ -59,18 +59,14 @@ export default function SimpleHero() {
           style={{ backgroundImage: `url('${slide.image}')` }}
         />
       ))}
-      
       {/* Dark Overlay for Better Text Readability */}
       <div className="absolute inset-0 bg-black/50" />
-      
-      {/* Navigation Arrows */}
+    {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300"
-      >
-        <ChevronLeft className="w-6 h-6 text-white" />
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300">
+   <ChevronLeft className="w-6 h-6 text-white" />  
       </button>
-      
       <button
         onClick={nextSlide}
         className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300"
@@ -87,21 +83,19 @@ export default function SimpleHero() {
               {slides[currentSlide].highlight}
             </span>
           </h1>
-          
           <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed">
             {slides[currentSlide].description}
           </p>
-          
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
             <Link to={"/inquery"} className="px-8 py-4 bg-red-600 rounded-lg font-semibold text-white flex items-center justify-center gap-2 hover:bg-red-700 transition-all duration-300 transform hover:scale-105">
              Find Your Partner
               <ArrowRight className="w-5 h-5" />
             </Link>
-            
-            <button className="px-8 py-4 bg-white/10 rounded-lg font-semibold text-white hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+        
+            {/* <Link to={"/inquery"} className="px-8 py-4 bg-white/10 rounded-lg font-semibold text-white hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
               Browse Profiles
-            </button>
+            </Link> */}
           </div>
         </div>
       </div>
@@ -119,36 +113,7 @@ export default function SimpleHero() {
         ))}
       </div>
 
-      {/* Bottom Stats Section */}
-      {/* <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm border-t border-white/10">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center text-white">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mb-2">
-                <Shield className="w-6 h-6 text-green-400" />
-              </div>
-              <span className="font-semibold text-lg">100% Secure</span>
-              <span className="text-sm text-gray-300">Privacy Protected</span>
-            </div>
-            
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-2">
-                <Users className="w-6 h-6 text-blue-400" />
-              </div>
-              <span className="font-semibold text-lg">50K+ Members</span>
-              <span className="text-sm text-gray-300">Verified Profiles</span>
-            </div>
-            
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mb-2">
-                <Heart className="w-6 h-6 text-red-400" />
-              </div>
-              <span className="font-semibold text-lg">10K+ Success</span>
-              <span className="text-sm text-gray-300">Happy Marriages</span>
-            </div>
-          </div>
-        </div>
-      </div> */}
+     
 
     </div>
   );

@@ -338,7 +338,7 @@ const Inquiry = () => {
     GJ: ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Jamnagar", "Bhavnagar", "Gandhinagar", "Junagadh", "Gandhidham", "Porbandar", "Anand", "Nadiad", "Surendranagar", "Botad", "Gondal"],
     HR: ["Gurgaon", "Faridabad", "Panipat", "Ambala", "Hisar", "Rohtak", "Sonipat", "Yamunanagar", "Karnal", "Bhiwani"],
     HP: ["Shimla", "Mandi", "Solan", "Kangra", "Kullu", "Dharamshala", "Baddi", "Nahan", "Palampur", "Una", "Hamirpur", "Bilaspur", "Chamba", "Kullu"],
-    JH: ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro Steel City", "Deoghar", "Giridih", "Hazaribagh", "Ramgarh", "Medininagar", "Phusro", "Chaibasa", "Jamshedpur"],
+    JH: ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro Steel City", "Deoghar", "Giridih", "Hazaribagh", "Ramgarh", "Medininagar", "Phusro", "Chaibasa"],
     KA: ["Bengaluru", "Mysuru", "Hubli-Dharwad", "Mangaluru", "Belagavi", "Davanagere", "Gulbarga", "Shimoga", "Tumkur", "Bijapur", "Udupi", "Hospet", "Hassan", "Haveri"],
     KL: ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Kannur", "Tirur", "Alappuzha", "Palakkad", "Kottayam", "Kasaragod", "Kannur"],
     MP: ["Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Ratlam", "Rewa", "Satna", "Dewas", "Murwara", "Singrauli", "Burhanpur", "Khandwa"],
@@ -349,13 +349,13 @@ const Inquiry = () => {
     NL: ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Zunheboto", "Kiphire Sadar", "Phek"],
     OR: ["Bhubaneswar", "Cuttack", "Rourkela", "Brahmapur", "Sambalpur", "Puri", "Balasore", "Bhadrak", "Chatrapur", "Jatani", "Baripada", "Kendrapara", "Paradip"],
     PB: ["Amritsar", "Ludhiana", "Jalandhar", "Patiala", "Bathinda", "Mohali", "Pathankot", "Moga", "Firozpur", "Gurdaspur", "Khanna", "Phagwara", "Abohar"],
-    RJ: ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Alwar", "Bharatpur", "Bhilwara", "Sikar", "Bharatpur", "Sri Ganganagar", "Pali"],
+    RJ: ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Alwar", "Bharatpur", "Bhilwara", "Sikar", "Sri Ganganagar", "Pali"],
     SK: ["Gangtok", "Namchi", "Gyalshing", "Mangan", "Rabdents"],
     TN: ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Erode", "Tirunelveli", "Tiruppur", "Vellore", "Thoothukudi", "Thanjavur", "Dindigul", "Theni", "Nagercoil"],
     TS: ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", "Ramagundam", "Mahbubnagar", "Nalgonda", "Adilabad", "Suryapet", "Miryalguda", "Kamareddy"],
     TR: ["Agartala", "Udaipur", "Dharmanagar", "Amarpur", "Kumarghat", "Gakulnagar", "Kunjaban"],
     UP: ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Meerut", "Prayagraj", "Bareilly", "Moradabad", "Aligarh", "Saharanpur", "Gorakhpur", "Firozabad", "Faizabad"],
-    UK: ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Pithoragarh", "Almora", "Bageshwar", "Rudrapur", "Haldwani"],
+    UK: ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Pithoragarh", "Almora", "Bageshwar"],
     WB: ["Kolkata", "Howrah", "Asansol", "Siliguri", "Durgapur", "Bardhaman", "Kharagpur", "Bally", "Baharampur", "Medinipur", "Hugli-Chinsurah", "Shantipur"],
     AN: ["Port Blair"],
     CH: ["Chandigarh"],
@@ -610,8 +610,8 @@ const Inquiry = () => {
     if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
     return age;
   };
-
-  // --- Steps Definition (UPDATED STEP 4) ---
+            
+  //-- Steps Definition (UPDATED STEP 4) ---
   const steps = [
     {
       num: 1,
@@ -643,13 +643,13 @@ const Inquiry = () => {
       desc: "Your religious and location details",
       icon: Cross,
       fields: [
-        { name: "religion", type: "select", options: religionOptions, required: false, label: "Religion" },
-        { name: "community", type: "select", required: false, label: "Community" },
+        { name: "religion", type: "select", options: religionOptions, required: true, label: "Religion" },
+        { name: "community", type: "select", required: true, label: "Community" },
         { name: "subCommunity", type: "select", required: false, label: "Sub Community" },
         { name: "noCasteBar", type: "checkbox", required: false, label: "No Caste Bar" },
-        { name: "country", type: "select", required: false, label: "Country" },
-        { name: "state", type: "select", required: false, label: "State" },
-        { name: "city", type: "select", required: false, label: "City" },
+        { name: "country", type: "select", required: true, label: "Country" },
+        { name: "state", type: "select", required: true, label: "State" },
+        { name: "city", type: "select", required: true, label: "City" },
       ]
     },
     {
@@ -875,7 +875,7 @@ const Inquiry = () => {
                   const display = opt.name;
                   return <option key={val || idx} value={val}>{display}</option>;
                 } else {
-                  return <option key={opt} value={opt}>{opt}</option>;
+                  return <option key={`${opt}-${idx}`} value={opt}>{opt}</option>;
                 }
               })}
             </select>

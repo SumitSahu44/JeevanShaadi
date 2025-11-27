@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { MapPin, Briefcase, GraduationCap, Home, Heart, User, Settings, Cake, Ruler, Users, Globe, Filter, Star, Search, ChevronLeft, X, BookAIcon } from 'lucide-react';
+import { MapPin, Briefcase, GraduationCap, Home, Heart, User, Settings, Cake, Ruler, Users, Globe, Filter, Star, Search, ChevronLeft, X, BookAIcon, MessageCircle, Bell, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import axios from 'axios'; // Add axios import for API calls
+import { toast } from 'react-toastify'; // Add toast import for notifications
+import io from 'socket.io-client'; // Add socket for real-time notify
+const socket = io('http://localhost:4000', {
+  auth: { token: localStorage.getItem('token') }
+}); // Global socket instance
 export default function MatrimonyDashboard() {
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState([]);
@@ -465,6 +472,22 @@ const calculateAge = (dob) => {
   if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
   return age;
 };
+  // New function to send chat request
+  const sendChatRequest = async (receiverId, receiverName) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat/requests/send`,
+        { receiverId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) {
+        toast.success(`Chat request sent to ${receiverName}!`);
+        socket.emit('newRequest', { receiverId });
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Error sending request');
+    }
+  };
   // Improved render function for match cards - Enhanced design with better visuals, gradients, icons, and layout
   const renderMatchCard = (profile) => {
     // Mock compatibility score for demo (can be replaced with real logic)
@@ -548,7 +571,7 @@ const calculateAge = (dob) => {
               <span className="truncate">{profile.city}, {profile.state || 'N/A'}</span>
             </p>
             <div className="flex items-center gap-2">
-           
+         
                 <BookAIcon className="w-4 h-4 text-gray-900 font-bold" />
             <p className="text-gray-600 font-medium">{profile.highestQualification || 'N/A'}</p>
             </div>
@@ -561,11 +584,11 @@ const calculateAge = (dob) => {
         {/* Right: Enhanced Actions */}
         <div className="flex flex-col items-end gap-3 pt-2 lg:pt-0 relative z-10">
           <button
-            onClick={() => console.log('Connect to', profile.Name)} // Replace with actual connect logic
+            onClick={() => sendChatRequest(profile._id, profile.Name)} // Updated: Send chat request
             className="w-full lg:w-auto px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl text-sm font-bold shadow-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
           >
             {/* <LinkIcon className="w-4 h-4" /> */}
-            Connect Now
+            Send Request
           </button>
           <button
             onClick={() => setSelectedProfile(profile)}
@@ -577,7 +600,7 @@ const calculateAge = (dob) => {
       </div>
     );
   };
-  const renderDetailedProfileCard = (profile, isCurrentUser = false) => {
+ const renderDetailedProfileCard = (profile, isCurrentUser = false) => {
     return (
       <div className="p-3 md:p-4">
         <div className="max-w-3xl mx-auto">
@@ -774,7 +797,7 @@ const calculateAge = (dob) => {
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="text-cyan-500 hover:underline text-sm font-medium"
               >
-                Back to Top ▲
+                Back to Top ▲ 
               </button>
             </div>
             {isCurrentUser && (
@@ -825,10 +848,7 @@ const calculateAge = (dob) => {
                 Edit Profile
               </button>
             </div>
-            {/* <div className="text-xs text-gray-500 text-center lg:text-left">
-              <p>Last Login: {lastLogin}</p>
-              <p>Profile created on: {createdDate}</p>
-            </div> */}
+           
           </div>
           {/* Center: Profile Completion */}
           <div className="flex-1">
@@ -839,9 +859,9 @@ const calculateAge = (dob) => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-neutral-600 mb-1">
                     <span>Progress</span>
-                    <span>{Math.round((Object.values(formData).filter(v => v !== '' && v !== false).length / Object.keys(formData).length) * 100)}%</span>
+                    {/* <span>{Math.round((Object.values(formData).filter(v => v !== '' && v !== false).length / Object.keys(formData).length) * 100)}%</span> */}
                   </div>
-                  <div className="w-full bg-neutral-100 rounded-full h-2">
+                  <div className="w-full bg-neutral-300 rounded-full h-2">
                     <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${(Object.values(formData).filter(v => v !== '' && v !== false).length / Object.keys(formData).length) * 100}%` }}
@@ -870,14 +890,49 @@ const calculateAge = (dob) => {
                   <span className="text-sm text-gray-500"></span>
                 )}
               </div>
-          
-            </div>
         
+            </div>
+      
           </div>
         </div>
       </div>
     );
   };
+  // Enhanced Chat Section Component
+  const ChatSection = () => (
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white rounded-full shadow-sm border border-gray-200">
+              <MessageCircle className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Chat & Connections</h3>
+              <p className="text-sm text-gray-600">Manage your conversations and requests</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/chat"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white text-blue-700 font-medium rounded-lg shadow-sm border border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 text-sm"
+            >
+              <MessageCircle className="w-4 h-4" />
+              My Chats
+            </Link>
+            <Link
+              to="/pending-requests"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white text-green-700 font-medium rounded-lg shadow-sm border border-green-200 hover:bg-green-50 hover:border-green-300 transition-all duration-200 text-sm"
+            >
+              <Bell className="w-4 h-4" />
+              Pending Requests
+            </Link>
+         
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   // Partner Search Sidebar component
 const PartnerSearchSidebar = ({ isMobile = false, onClose }) => {
   // === Yeh sab aapke code mein pehle se hone chahiye the ===
@@ -1565,7 +1620,7 @@ const PartnerSearchSidebar = ({ isMobile = false, onClose }) => {
       ) : (
         <>
           <div className="bg-white border-b border-gray-200 shadow-sm">
-       
+     
             <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
               <div className="flex flex-wrap items-center justify-start space-x-1 sm:space-x-3 lg:space-x-6 py-3">
                 {tabs.map(tab => {
@@ -1599,8 +1654,8 @@ const PartnerSearchSidebar = ({ isMobile = false, onClose }) => {
             <main className="p-3 md:p-4">
               {activeTab === 'matches' && (
                 <div className="max-w-7xl mx-auto">
-             
-              <h1 className='font-bold text-gray-700 text-left mt-3 ml-5'>Hello, {currentUser.Name}!</h1>
+                  <ChatSection />
+                  <h1 className='font-bold text-gray-700 text-left mt-3 ml-5'>Hello, {currentUser.Name}!</h1>
                   <ProfileHeader />
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative z-0">
                     {/* Desktop Sidebar */}

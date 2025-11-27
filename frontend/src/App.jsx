@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom"
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Faq from './Faq'
@@ -15,11 +15,15 @@ import FixedBackgroundHero from './FixedBackground'
 import Navbar from '../Components/Navbar'
 import About from "../Pages/About"
 import Login from "../Pages/Login"
-import Inquery from "../Pages/Inquery"
 
 import Dashboard from "../Pages/Dashboard"
 import Inquiry from "../Pages/Inquery"
 import EditProfile from "../Pages/EditProfile"
+
+// New Chat Pages
+import Profile from "../Pages/Profile"  // New: Profile with Send Request
+import PendingRequests from "../Pages/PendingRequests"  // New: Pending list
+import Chat from "../Pages/Chat"  // New: Chat interface
 
 // Admin imports
 import AdminRoute from '../Components/admin/AdminRoute'
@@ -27,7 +31,6 @@ import AdminLogin from '../Pages/admin/Login'
 import AdminDashboard from '../Pages/admin/AdminDashboard'
 import AdminUsers from '../Pages/admin/Users'
 import AdminInquiries from '../Pages/admin/Inquiries'
-// import ScrollToTop from "../../../EdmireAi/EdmireAi/src/ScrollToTop"
 
 function App() {
   return (
@@ -59,6 +62,11 @@ function AppContent() {
       {!shouldHideLayout && <Navbar />}
 
       <Routes>
+        {/* New Chat Routes */}
+        <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/pending-requests" element={<PendingRequests />} />
+        <Route path="/chat/:roomId?" element={<Chat />} />
+
         {/* Admin Routes */}
         <Route path="/admin">
           <Route path="login" element={<AdminLogin />} />
@@ -73,9 +81,7 @@ function AppContent() {
         {/* Main Routes */}
         <Route path="/" element={
           <>
-      
             <Hero />
-
             <WhyChoose />
             <HowitWorks />
             <PersonalizedMatch />
@@ -86,7 +92,7 @@ function AppContent() {
             <Testimonials />
           </>
         } />
-    {/* <ScrollToTop/> */}
+        {/* <ScrollToTop/> */}
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/inquery" element={<Inquiry />} />
