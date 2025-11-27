@@ -5,5 +5,4 @@ const chatSchema = new mongoose.Schema({
   requestId: { type: mongoose.Schema.Types.ObjectId, ref: 'ChatRequest' },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
-
 module.exports = mongoose.model('Chat', chatSchema);

@@ -55,7 +55,6 @@ const userSchema = new mongoose.Schema({
 
     // Languages
     motherTongue: { type: String },
-
     // Contact & Login
     email: { type: String,  unique: true, lowercase: true },
     mobile: { type: String,  unique: true },
