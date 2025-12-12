@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Heart, Star, Quote } from 'lucide-react';
 const testimonials = [
   {
     id: 1,
-    name: "Priya & Rahul",
+    name: "Priya & Sumit",
     location: "Mumbai, Maharashtra",
     image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop",
     story: "We found each other through this wonderful platform. Our families connected instantly, and within 6 months, we were married. Thank you for helping us find our perfect match!",
@@ -13,7 +13,7 @@ const testimonials = [
   },
   {
     id: 2,
-    name: "Anjali & Vikram",
+    name: "Anjali & Mohit",
     location: "Delhi, India",
     image: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=400&fit=crop",
     story: "The detailed profiles and compatibility matching made it so easy to find someone who truly understood me. We're now happily married with a beautiful journey ahead!",
