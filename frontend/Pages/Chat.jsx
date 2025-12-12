@@ -220,6 +220,7 @@ const Chat = () => {
       // toast.error('Error fetching chats');
     }
   }, [token, user?.id, dispatch]);
+  
 
   const setRoom = useCallback(async (id) => {
     console.log('Joining room:', id, 'User:', user?.id); // Debug log added
