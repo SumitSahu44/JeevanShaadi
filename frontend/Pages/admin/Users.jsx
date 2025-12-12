@@ -1,59 +1,88 @@
 // src/Pages/admin/Users.jsx
 import React, { useEffect, useState, useMemo } from 'react';
-import { Search, Edit, Eye, Trash2, ChevronLeft, ChevronRight, User, Mail, Phone, Calendar, Award, Camera } from 'lucide-react';
-import TopNav from '../../Components/admin/TopNav';
+import { 
+  Search, Edit, Eye, Trash2, User, Mail, Phone, 
+  Calendar, Award, X, MapPin, Briefcase 
+} from 'lucide-react';
 import Sidebar from '../../Components/admin/Sidebar';
 import DataTable from '../../Components/admin/DataTable';
 import api from '../../src/utils/api';
-const Modal = ({ children, onClose, wide = false }) => (
-  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn" onClick={onClose}>
+
+// --- Premium Modal Component (Responsive) ---
+const Modal = ({ children, onClose, title, wide = false }) => (
+  <div 
+    className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4 transition-all animate-in fade-in duration-200"
+    onClick={onClose}
+  >
     <div
-      className={`bg-white rounded-2xl shadow-2xl p-8 ${wide ? 'w-full max-w-5xl' : 'w-full max-w-lg'} max-h-screen overflow-y-auto transform transition-all duration-300 scale-100`}
+      className={`bg-white rounded-2xl shadow-2xl w-full ${wide ? 'max-w-4xl' : 'max-w-lg'} max-h-[85vh] flex flex-col transform transition-all scale-100`}
       onClick={(e) => e.stopPropagation()}
     >
-      <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-      </button>
-      {children}
+      {/* Modal Header */}
+      <div className="flex items-center justify-between px-5 py-4 md:px-6 md:py-5 border-b border-slate-100 bg-slate-50/80 rounded-t-2xl sticky top-0 z-10 backdrop-blur-md">
+        <h3 className="text-lg font-bold text-slate-800">{title}</h3>
+        <button 
+          onClick={onClose} 
+          className="p-2 bg-white border border-slate-200 text-slate-400 rounded-full hover:bg-slate-50 hover:text-slate-600 transition shadow-sm active:scale-95"
+        >
+          <X size={18} />
+        </button>
+      </div>
+      
+      {/* Modal Body (Scrollable) */}
+      <div className="p-5 md:p-8 overflow-y-auto custom-scrollbar">
+        {children}
+      </div>
     </div>
   </div>
 );
 
-const Input = ({ label, type = 'text', value = '', onChange, icon: Icon }) => (
-  <div className="relative">
-    <label className="block text-sm font-semibold text-gray-700 mb-2">{label}</label>
-    <div className="relative">
-      {Icon && <Icon className="absolute left-3 top-3 h-5 w-5 text-indigo-500" />}
+// --- Form Components ---
+const Input = ({ label, type = 'text', value = '', onChange, icon: Icon, placeholder }) => (
+  <div className="space-y-1.5">
+    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide ml-1">{label}</label>
+    <div className="relative group">
+      {Icon && <Icon className="absolute left-3.5 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />}
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full pl-10 pr-4 py-3 -2 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:-indigo-500 transition-all duration-200 ${Icon ? 'pl-12' : ''}`}
-        placeholder={`Enter ${label.toLowerCase()}`}
+        className={`w-full ${Icon ? 'pl-11' : 'pl-4'} pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm text-slate-800 font-medium placeholder:text-slate-400`}
+        placeholder={placeholder}
       />
     </div>
   </div>
 );
 
-const Info = ({ label, value, icon: Icon }) => (
-  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-    {Icon && <Icon className="h-5 w-5 text-indigo-600" />}
-    <div>
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</p>
-      <p className="text-sm font-semibold text-gray-800">{value ?? '—'}</p>
+const InfoCard = ({ label, value, icon: Icon, subValue }) => (
+  <div className="flex items-start gap-3 p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-100 transition-colors group">
+    <div className="mt-1 p-2 bg-white rounded-lg border border-slate-100 shadow-sm text-indigo-600 group-hover:text-indigo-700 group-hover:shadow-md transition-all">
+      {Icon ? <Icon size={18} /> : <div className="w-[18px] h-[18px]" />}
+    </div>
+    <div className="flex-1 min-w-0"> {/* min-w-0 ensures text truncation works if needed */}
+      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-slate-900 break-words">{value || '—'}</p>
+      {subValue && <p className="text-xs text-slate-500 mt-1">{subValue}</p>}
     </div>
   </div>
 );
 
 const Users = () => {
+  // State
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Pagination State
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0); 
   const [pageSize] = useState(10);
+  
+  // Search State
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', email: '', mobile: '' });
@@ -61,122 +90,49 @@ const Users = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewingUser, setViewingUser] = useState(null);
 
-  const columns = useMemo(() => [
-    { 
-      key: '_id', 
-      label: 'ID', 
-      render: (u) => <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">{u._id.slice(-6)}</span> 
-    },
-    { 
-      key: 'name', 
-      label: 'Name', 
-      render: (u) => (
-        <div className="flex items-center gap-2">
-          {/* <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            {u.name?.[0]?.toUpperCase() || 'U'}
-          </div> */}
-          <span className="font-semibold text-gray-800">{u.Name || '—'}</span>
-        </div>
-      ) 
-    },
-    { key: 'email', label: 'Email', render: (u) => <span className="text-indigo-600 font-medium">{u.email}</span> },
-    { key: 'phone', label: 'mobile', render: (u) => u.mobile || <span className="text-gray-400">—</span> },
-    { 
-      key: 'createdAt', 
-      label: 'Joined', 
-      render: (u) => (
-        <div className="flex items-center gap-1 text-sm">
-          <Calendar className="h-4 w-4 text-gray-500" />
-          {new Date(u.createdAt).toLocaleDateString('en-IN')}
-        </div>
-      ) 
-    },
-    // {
-    //   key: 'profile',
-    //   label: 'Profile',
-    //   render: (u) => {
-    //     const p = u.profile || {};
-    //     const filled = [p.education, p.occupation, p.annualIncome, p.aboutMe, p.photos?.length > 0].filter(Boolean).length;
-    //     const percentage = (filled / 5) * 100;
-    //     return (
-    //       <div className="space-y-1">
-    //         <div className="flex items-center justify-between text-xs">
-    //           <span className="font-medium">{filled}/5 Complete</span>
-    //           <span className="text-gray-500">{percentage}%</span>
-    //         </div>
-    //         <div className="w-full bg-gray-200 rounded-full h-2">
-    //           <div 
-    //             className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-    //             style={{ width: `${percentage}%` }}
-    //           />
-    //         </div>
-    //         <div className="flex items-center gap-1 text-xs text-gray-500">
-    //           <Camera className="h-3 w-3" />
-    //           {p.photos?.length || 0} photos
-    //         </div> 
-    //       </div>
-    //     );
-    //   },
-    // },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (user) => (
-        <div className="flex gap-2">
-          <button 
-            onClick={(e) => { e.stopPropagation(); handleView(user); }} 
-            className="p-2.5 bg-blue-50 text-blue-600  items-center gap-3 flex rounded-lg hover:bg-blue-100 transition transform hover:scale-110"
-            title="View Profile"
-          >
-           View <Eye className="h-4 w-4" />
-          </button>
-          {/* <button 
-            onClick={(e) => { e.stopPropagation(); handleEdit(user); }} 
-            className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition transform hover:scale-110"
-            title="Edit User"
-          >
-            <Edit className="h-4 w-4" />
-          </button> */}
-          <button 
-            onClick={(e) => { e.stopPropagation(); handleDelete(user); }} 
-            className="p-2.5 bg-red-50 flex items-center gap-3 text-red-600 rounded-lg hover:bg-red-100 transition transform hover:scale-110"
-            title="Delete User"
-          >
-           Delete <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      ),
-    },
-  ], []);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [page, searchTerm]);
-
-  const fetchUsers = async () => {
+  // --- API Fetch ---
+  const fetchUsers = async (pageNum = 1) => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
-        page: page.toString(),
+        page: pageNum.toString(),
         limit: pageSize.toString(),
         ...(searchTerm && { search: searchTerm }),
       });
 
       const response = await api.get(`/admin/users?${params}`);
-      console.log(response.data);
+      
       setUsers(response.data.users || []);
       setTotalPages(response.data.totalPages || 1);
+      setTotalUsers(response.data.totalUsers || 0); 
+      setPage(pageNum);
       setError(null);
     } catch (error) {
-      setError('Failed to load users');
+      console.error(error);
+      setError('Failed to load users data.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Debounce Search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchUsers(1); 
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Initial Load
+  useEffect(() => {
+    if(!searchTerm) fetchUsers(page);
+  }, [page]); 
+
+
+  // --- Actions ---
   const handleEdit = (user) => {
     setEditingUser(user);
-    setEditForm({ name: user.name || '', email: user.email || '', mobile: user.mobile || '' });
+    setEditForm({ name: user.Name || '', email: user.email || '', mobile: user.mobile || '' });
     setIsEditModalOpen(true);
   };
 
@@ -185,19 +141,17 @@ const Users = () => {
     try {
       await api.patch(`/admin/users/${editingUser._id}`, editForm);
       setIsEditModalOpen(false);
-      fetchUsers();
-      alert('User updated successfully!');
+      fetchUsers(page);
     } catch (error) {
       alert(error.response?.data?.message || 'Update failed');
     }
   };
 
   const handleDelete = async (user) => {
-    if (!window.confirm(`Delete "${user.name || user.email}"? This cannot be undone.`)) return;
+    if (!window.confirm(`Delete "${user.Name || user.email}"? This cannot be undone.`)) return;
     try {
       await api.delete(`/admin/users/${user._id}`);
-      fetchUsers();
-      alert('User deleted successfully');
+      fetchUsers(page);
     } catch (error) {
       alert(error.response?.data?.message || 'Delete failed');
     }
@@ -208,155 +162,203 @@ const Users = () => {
     setIsViewModalOpen(true);
   };
 
+  // --- Table Configuration ---
+  const columns = useMemo(() => [
+    { 
+      key: 'name', 
+      label: 'User Profile', 
+      render: (u) => (
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm border border-slate-200 shadow-sm shrink-0">
+            {u.Name?.[0]?.toUpperCase() || 'U'}
+          </div>
+          <div>
+            <div className="font-semibold text-slate-800 text-sm">{u.Name || 'Unknown'}</div>
+            <div className="text-xs text-slate-500 font-mono">ID: {u._id.slice(-6)}</div>
+          </div>
+        </div>
+      ) 
+    },
+    { 
+      key: 'contact', 
+      label: 'Contact Info', 
+      render: (u) => (
+        <div className="flex flex-col gap-1">
+          <span className="text-sm text-slate-600 flex items-center gap-1.5 font-medium break-all">
+            <Mail size={13} className="text-slate-400 shrink-0" /> {u.email}
+          </span>
+          <span className="text-xs text-slate-500 flex items-center gap-1.5">
+            <Phone size={13} className="text-slate-400 shrink-0" /> {u.mobile || '—'}
+          </span>
+        </div>
+      ) 
+    },
+    { 
+      key: 'createdAt', 
+      label: 'Joined Date', 
+      render: (u) => (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 text-xs font-semibold border border-slate-200 whitespace-nowrap">
+          <Calendar size={12} className="text-slate-400" />
+          {new Date(u.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+        </span>
+      ) 
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (user) => (
+        <div className="flex justify-end items-center gap-2">
+          {/* View Button */}
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleView(user); }} 
+            className="group flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg transition-all hover:bg-indigo-600 hover:text-white hover:border-indigo-600 shadow-sm"
+          >
+            <Eye size={14} className="text-indigo-600 group-hover:text-white transition-colors" />
+            <span className="hidden lg:inline">View</span>
+          </button>
+          
+          {/* Delete Button */}
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleDelete(user); }} 
+            className="group flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 rounded-lg transition-all hover:bg-rose-600 hover:text-white hover:border-rose-600 shadow-sm"
+          >
+            <Trash2 size={14} className="text-rose-600 group-hover:text-white transition-colors" />
+            <span className="hidden lg:inline">Delete</span>
+          </button>
+        </div>
+      ),
+    },
+  ], []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50">
+    <div className="min-h-screen bg-[#F8FAFC]">
       <Sidebar />
-      {/* <TopNav /> */}
       
-      <main className="ml-64 pt-5 p-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Users Management</h1>
-          <p className="text-gray-600">Manage and monitor all registered users</p>
+      {/* Responsive Main Container 
+        - ml-0 on mobile (full width)
+        - md:ml-64 on desktop (push right for sidebar)
+        - pt-20 on mobile (clearance for mobile header/hamburger)
+        - md:pt-8 on desktop (standard spacing)
+      */}
+      <main className="ml-0 md:ml-64 pt-20 md:pt-8 p-4 md:p-10 transition-all duration-300">
+        
+        {/* Page Header */}
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">User Management</h1>
+          <p className="text-slate-500 mt-1.5 text-sm">Monitor, update and manage registered user profiles.</p>
         </div>
 
-        {/* Search & Stats Bar */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by name or email..."
-                value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-                className="w-full pl-12 pr-4 py-3 -2 -gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:-indigo-500 transition-all duration-300"
-              />
+        {/* Controls Bar (Responsive: Stack on mobile, Row on desktop) */}
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6">
+          <div className="relative w-full sm:w-96">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-slate-400" />
             </div>
-            <div className="flex gap-3">
-              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-3 rounded-xl font-semibold shadow-md">
-                Total Users: {users.length}
-              </div>
-            </div>
+            <input
+              type="text"
+              placeholder="Search by name, email or phone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all shadow-sm"
+            />
+          </div>
+          
+          <div className="flex items-center justify-between sm:justify-end gap-2">
+             <div className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-semibold border border-indigo-100 shadow-sm w-full sm:w-auto text-center">
+                Total Users: <span className="text-indigo-900">{totalUsers}</span>
+             </div>
           </div>
         </div>
 
-        {/* Error */}
+        {/* Error Alert */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 -l-4 -red-500 rounded-r-xl text-red-700 flex items-center gap-2">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
-            {error}
+          <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm flex items-center gap-2 animate-in fade-in">
+             <span className="w-2 h-2 bg-red-500 rounded-full shrink-0"></span>
+             {error}
           </div>
         )}
 
-        {/* Table */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <DataTable columns={columns} data={users} loading={loading} />
-        </div>
-
-        {/* Pagination */}
-        <div className="mt-8 flex justify-center items-center gap-3">
-          <button 
-            onClick={() => setPage(p => Math.max(1, p - 1))} 
-            disabled={page === 1 || loading} 
-            className="p-3 bg-white -2 -gray-200 rounded-xl hover:bg-indigo-50 hover:-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2"
-          >
-            <ChevronLeft className="h-5 w-5" />
-            Previous
-          </button>
-          <div className="flex gap-2">
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i+1}
-                onClick={() => setPage(i+1)}
-                className={`w-10 h-10 rounded-xl font-semibold transition-all ${
-                  page === i+1 
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg' 
-                    : 'bg-gray-100 hover:bg-gray-200'
-                }`}
-              >
-                {i+1}
-              </button>
-            ))}
-          </div>
-          <button 
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))} 
-            disabled={page === totalPages || loading} 
-            className="p-3 bg-white -2 -gray-200 rounded-xl hover:bg-indigo-50 hover:-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2"
-          >
-            Next
-            <ChevronRight className="h-5 w-5" />
-          </button>
-        </div>
+        {/* Data Table */}
+        <DataTable 
+          columns={columns} 
+          data={users} 
+          loading={loading}
+          pagination={{
+            currentPage: page,
+            totalPages: totalPages,
+            totalItems: totalUsers,
+            itemsPerPage: pageSize
+          }}
+          onPageChange={(newPage) => fetchUsers(newPage)}
+        />
       </main>
 
-      {/* Edit Modal */}
+      {/* --- Edit Modal --- */}
       {isEditModalOpen && (
-        <Modal onClose={() => setIsEditModalOpen(false)}>
-          <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <Edit className="h-6 w-6 text-indigo-600" />
-            Edit User
-          </h3>
+        <Modal title="Edit User Details" onClose={() => setIsEditModalOpen(false)}>
           <div className="space-y-5">
-            <Input label="Name" icon={User} value={editForm.name} onChange={(v) => setEditForm({ ...editForm, name: v })} />
-            <Input label="Email" type="email" icon={Mail} value={editForm.email} onChange={(v) => setEditForm({ ...editForm, email: v })} />
-         <Input 
-  label="Phone" 
-  icon={Phone}   // Fixed: was mobile
-  value={editForm.mobile} 
-  onChange={(v) => setEditForm({ ...editForm, mobile: v })}
-/> </div>
-          <div className="mt-8 flex justify-end gap-3">
-            <button onClick={() => setIsEditModalOpen(false)} className="px-6 py-3 -2 -gray-300 rounded-xl hover:bg-gray-50 transition">
-              Cancel
-            </button>
-            <button onClick={handleSaveEdit} className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:shadow-lg transform hover:scale-105 transition">
-              Save Changes
-            </button>
+            <Input label="Full Name" icon={User} value={editForm.name} onChange={(v) => setEditForm({ ...editForm, name: v })} placeholder="John Doe" />
+            <Input label="Email Address" type="email" icon={Mail} value={editForm.email} onChange={(v) => setEditForm({ ...editForm, email: v })} placeholder="john@example.com" />
+            <Input label="Phone Number" icon={Phone} value={editForm.mobile} onChange={(v) => setEditForm({ ...editForm, mobile: v })} placeholder="+91 98765 43210" />
+            
+            <div className="pt-4 flex justify-end gap-3">
+              <button onClick={() => setIsEditModalOpen(false)} className="px-5 py-2.5 text-slate-600 text-sm font-medium hover:bg-slate-50 rounded-xl transition">
+                Cancel
+              </button>
+              <button onClick={handleSaveEdit} className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition">
+                Save Changes
+              </button>
+            </div>
           </div>
         </Modal>
       )}
 
-      {/* View Modal */}
+      {/* --- View Modal (Responsive Grid) --- */}
       {isViewModalOpen && viewingUser && (
-        <Modal onClose={() => setIsViewModalOpen(false)} wide>
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full text-white text-2xl font-bold shadow-lg">
-              {viewingUser.name?.[0]?.toUpperCase() || 'U'}
-            </div>
-            <h3 className="text-2xl font-bold text-gray-800 mt-3">{viewingUser.name || viewingUser.email}</h3>
-            <p className="text-gray-500">User Profile Details</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <User className="h-5 w-5 text-indigo-600" />
-                Basic Information
-              </h4>
-              <div className="space-y-3">
-                <Info label="Email" value={viewingUser.email} icon={Mail} />
- <Info label="phone" value={viewingUser.mobile} icon={Phone} />
-                <Info label="Member Since" value={new Date(viewingUser.createdAt).toLocaleDateString('en-IN')} icon={Calendar} />
+        <Modal title="User Profile" onClose={() => setIsViewModalOpen(false)} wide>
+          <div className="flex flex-col md:flex-row gap-8">
+            
+            {/* Sidebar / Profile Header */}
+            {/* Stack on mobile, Sidebar on desktop */}
+            <div className="md:w-1/3 flex flex-col items-center text-center border-b md:border-b-0 md:border-r border-slate-100 pb-6 md:pb-0 md:pr-6">
+              <div className="w-20 h-20 md:w-24 md:h-24 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-2xl md:text-3xl font-bold mb-4 shadow-inner border border-indigo-100">
+                 {viewingUser.Name?.[0]?.toUpperCase() || 'U'}
               </div>
+              <h4 className="text-xl font-bold text-slate-900">{viewingUser.Name || 'Unknown User'}</h4>
+              <span className="inline-flex mt-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full border border-emerald-100">
+                Active Account
+              </span>
+              <p className="text-sm text-slate-500 mt-4 px-2 leading-relaxed italic">
+                {viewingUser.aboutYourself ? `"${viewingUser.aboutYourself}"` : "No bio available."}
+              </p>
             </div>
 
-            <div>
-              <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <Award className="h-5 w-5 text-indigo-600" />
-                Profile Completion
-              </h4>
-              {viewingUser.profile ? (
-                <div className="space-y-3">
-                  <Info label="Education" value={viewingUser.highestQualification || '—'} />
-                  <Info label="Occupation" value={viewingUser.workDetails || '—'} />
-                  <Info label="Annual Income" value={viewingUser.income ? `₹${viewingUser.income}` : '—'} />
-                  <Info label="About Me" value={viewingUser.aboutYourself || '—'} />
-                  {/* <Info label="Hobbies" value={viewingUser.profile.hobbies?.join(', ') || '—'} /> */}
-                  {/* <Info label="Photos" value={`${viewingUser.photos?.length || 0} uploaded`} icon={Camera} /> */}
+            {/* Main Info Grid */}
+            <div className="md:w-2/3 space-y-6">
+              <div>
+                <h5 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                  <User size={16} className="text-indigo-500" /> Personal Details
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                   <InfoCard label="Email" value={viewingUser.email} icon={Mail} />
+                   <InfoCard label="Phone" value={viewingUser.mobile} icon={Phone} />
+                   <InfoCard label="Joined" value={new Date(viewingUser.createdAt).toLocaleDateString()} icon={Calendar} />
+                   <InfoCard label="City" value={viewingUser.city} subValue={viewingUser.state} icon={MapPin} />
                 </div>
-              ) : (
-                <p className="text-gray-500 italic p-4 bg-gray-50 rounded-xl">No profile data available</p>
+              </div>
+
+              {viewingUser.profileFor && (
+                <div>
+                  <h5 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2 mt-6">
+                    <Briefcase size={16} className="text-indigo-500" /> Professional & Other
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                     <InfoCard label="Education" value={viewingUser.highestQualification} icon={Award} />
+                     <InfoCard label="Work" value={viewingUser.workDetails} icon={Briefcase} />
+                     <InfoCard label="Income" value={viewingUser.income ? `₹${viewingUser.income}` : null} />
+                     <InfoCard label="Profile For" value={viewingUser.profileFor} />
+                  </div>
+                </div>
               )}
             </div>
           </div>
