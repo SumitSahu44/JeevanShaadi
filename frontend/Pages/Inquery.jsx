@@ -1093,7 +1093,7 @@ const Inquiry = () => {
 
       const data = await res.json();
       setSuccessMsg(data.message || "Profile created successfully!");
-      setTimeout(() => navigate('/dashboard'), 2000);
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       setErrorMsg(err.message || "Something went wrong. Please try again.");
     }
