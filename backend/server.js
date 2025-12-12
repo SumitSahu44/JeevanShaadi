@@ -62,7 +62,7 @@ app.use(
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],  // Explicit methods
+    methods: ['GET', 'POST','PUT', 'PATCH', 'DELETE'],  // Explicit methods
     allowedHeaders: ['Content-Type', 'Authorization']  // Explicit headers
   })
 );

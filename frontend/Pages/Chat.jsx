@@ -217,7 +217,7 @@ const Chat = () => {
       if (res.data.success) dispatch(setRooms(res.data.data));
     } catch (err) {
       console.error('Error fetching rooms:', err);
-      toast.error('Error fetching chats');
+      // toast.error('Error fetching chats');
     }
   }, [token, user?.id, dispatch]);
 

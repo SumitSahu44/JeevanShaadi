@@ -1940,7 +1940,7 @@ const PartnerSearchSidebar = ({ isMobile = false, onClose }) => {
                     </div>
                   </div>
                 </div>
-              )}
+              )}   
               {activeTab === 'settings' && (
                 <div className="max-w-3xl mx-auto">
                   <h2 className="text-xl font-bold text-gray-900 mb-4">Settings</h2>

@@ -123,7 +123,7 @@ const EditProfile = () => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
-      ...prev,
+      ...prev, 
       [name]: type === 'checkbox' ? checked : value
     }));
   };

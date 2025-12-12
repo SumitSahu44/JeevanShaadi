@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Sparkles, Star } from 'lucide-react';
-
+ 
 export default function AboutUs() {
  
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       

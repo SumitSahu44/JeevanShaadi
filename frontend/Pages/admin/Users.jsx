@@ -113,7 +113,7 @@ const Users = () => {
     //         <div className="flex items-center gap-1 text-xs text-gray-500">
     //           <Camera className="h-3 w-3" />
     //           {p.photos?.length || 0} photos
-    //         </div>
+    //         </div> 
     //       </div>
     //     );
     //   },
@@ -125,24 +125,24 @@ const Users = () => {
         <div className="flex gap-2">
           <button 
             onClick={(e) => { e.stopPropagation(); handleView(user); }} 
-            className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition transform hover:scale-110"
+            className="p-2.5 bg-blue-50 text-blue-600  items-center gap-3 flex rounded-lg hover:bg-blue-100 transition transform hover:scale-110"
             title="View Profile"
           >
-            <Eye className="h-4 w-4" />
+           View <Eye className="h-4 w-4" />
           </button>
-          <button 
+          {/* <button 
             onClick={(e) => { e.stopPropagation(); handleEdit(user); }} 
             className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition transform hover:scale-110"
             title="Edit User"
           >
             <Edit className="h-4 w-4" />
-          </button>
+          </button> */}
           <button 
             onClick={(e) => { e.stopPropagation(); handleDelete(user); }} 
-            className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition transform hover:scale-110"
+            className="p-2.5 bg-red-50 flex items-center gap-3 text-red-600 rounded-lg hover:bg-red-100 transition transform hover:scale-110"
             title="Delete User"
           >
-            <Trash2 className="h-4 w-4" />
+           Delete <Trash2 className="h-4 w-4" />
           </button>
         </div>
       ),

@@ -72,8 +72,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative  bg-gradient-to-b from-red-950 via-red-900 to-red-950
- text-white pt-20 pb-10 overflow-hidden">
+    <footer className="relative bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white pt-20 pb-10 overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-64 h-64 bg-red-500 rounded-full blur-3xl"></div>
@@ -207,19 +206,32 @@ const Footer = () => {
           <div className="h-px bg-red-400 flex-1"></div>
         </div>
 
-        {/* Bottom section */}
+        {/* Bottom section (FIXED) */}
         <div className="pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <motion.p
+            {/* Changed from motion.p to motion.div to prevent nesting errors */}
+            <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 1 }}
               className="text-red-100 text-center md:text-left"
             >
-              © {currentYear} JeevanSadi.com. All rights reserved. Made with{' '}
-              <Heart className="w-4 h-4 inline text-red-400 fill-red-400" /> in India
-              <p>Designed and Developed by <a href='https://digitalsuccesssolutions.in/' className='underline'>  Digital Success Solutions.</a></p>
-            </motion.p>
+              <p>
+                © {currentYear} JeevanSadi.com. All rights reserved. Made with{' '}
+                <Heart className="w-4 h-4 inline text-red-400 fill-red-400" /> in India
+              </p>
+              <p className="mt-1">
+                Designed and Developed by{" "}
+                <a
+                  href="https://digitalsuccesssolutions.in/"
+                  className="underline hover:text-white transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Digital Success Solutions.
+                </a>
+              </p>
+            </motion.div>
             
             <motion.div
               initial={{ opacity: 0 }}

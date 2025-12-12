@@ -19,6 +19,7 @@ const calculateAge = (dob) => {
 exports.adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Admin Login Attempt:', email);
     if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
