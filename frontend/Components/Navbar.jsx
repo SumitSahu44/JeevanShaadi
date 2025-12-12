@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 const PLACEHOLDER_IMAGE = "https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg"; // Add your placeholder image path here
 
@@ -83,6 +83,18 @@ export default function Navbar() {
             <a href="/help" className="hover:text-red-600 transition-colors">
               Help
             </a>
+           {currentUser ? (
+              <>
+                <NavLink to="/dashboard" className="hover:text-red-600 transition-colors">
+                  Dashboard
+                </NavLink>
+              </>
+            ) : (
+              <Link to="/login" className="hover:text-red-600 transition-colors">
+                Login
+              </Link>
+            )}
+
             {currentUser ? (
               <>
                 <div className="flex items-center space-x-2">

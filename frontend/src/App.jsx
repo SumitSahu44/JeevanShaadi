@@ -68,7 +68,7 @@ function AppContent() {
         <Route path="/chat/:roomId?" element={<Chat />} />
 
         {/* Admin Routes */}
-        <Route path="/admin">
+        {/* <Route path="/admin">
           <Route path="login" element={<AdminLogin />} />
           <Route element={<AdminRoute />}>
             <Route index element={<AdminDashboard />} />
@@ -76,8 +76,10 @@ function AppContent() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="inquiries" element={<AdminInquiries />} />
           </Route>
-        </Route>
+        </Route> */}
 
+          <Route path="/admin/5173/90179bd8-8734-4f3f-aac6-b9d7825f71c9" element={<AdminDashboard />} />
+<Route path="/admin/users/5173/90179bd8-8734-4f3f-aac6-b9d7825f71c9" element={<AdminUsers />} />
         {/* Main Routes */}
         <Route path="/" element={
           <>
