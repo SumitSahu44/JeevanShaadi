@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios'; // Add axios import for API calls
 import { toast } from 'react-toastify'; // Add toast import for notifications
 import io from 'socket.io-client'; // Add socket for real-time notify
-const socket = io('http://localhost:4000', {
+const socket = io('https://jeevanshaadi.onrender.com', {
   auth: { token: localStorage.getItem('token') }
 }); // Global socket instance
 export default function MatrimonyDashboard() {

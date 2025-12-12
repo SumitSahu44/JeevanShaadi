@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import { setUser } from '../src/store/userSlice';
 
-const socket = io('http://localhost:4000', { 
+const socket = io('https://jeevanshaadi.onrender.com', { 
   auth: { token: localStorage.getItem('token') } 
 });
 
@@ -20,12 +20,12 @@ const Profile = () => {
 
   useEffect(() => {
     if (token && !user) {
-      axios.get(`http://localhost:4000/api/profile/${token.userId || user._id}`, {
+      axios.get(`https://jeevanshaadi.onrender.com/api/profile/${token.userId || user._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => dispatch(setUser({ token, user: res.data }))).catch(() => {});
     }
 
-    axios.get(`http://localhost:4000/api/profile/${id}`, { 
+    axios.get(`https://jeevanshaadi.onrender.com/api/profile/${id}`, { 
       headers: { Authorization: `Bearer ${token}` } 
     }).then(res => {
       if (res.data) setProfile(res.data);
@@ -38,7 +38,7 @@ const Profile = () => {
 
 const sendRequest = async () => {
   try {
-    const res = await axios.post('http://localhost:4000/api/chat/requests/send', 
+    const res = await axios.post('https://jeevanshaadi.onrender.com/api/chat/requests/send', 
       { receiverId: id }, 
       { headers: { Authorization: `Bearer ${token}` } }
     );

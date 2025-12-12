@@ -18,7 +18,7 @@ const io = socketIo(server, {
         "http://localhost:5174",
         "http://localhost:5175",
         "https://jeevanshaadi.com",
-        "http://localhost:4000",
+        "https://jeevanshaadi.onrender.com",
         "http://127.0.0.1:5173",  // Added localhost IP variant
         "http://127.0.0.1:5174",
         "http://127.0.0.1:5175"
@@ -44,7 +44,7 @@ const allowedOrigins = [
   "http://localhost:5174",
   "http://localhost:5175",
   "https://jeevanshaadi.com",
-  "http://localhost:4000",
+  "https://jeevanshaadi.onrender.com",
   "http://127.0.0.1:5173",  // Added localhost IP variant
   "http://127.0.0.1:5174",
   "http://127.0.0.1:5175"

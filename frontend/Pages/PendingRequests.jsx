@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 import { setPendingRequests } from '../src/store/chatSlice';
 import { ChevronLeft, User, MessageCircle, Check, X, Clock, MapPin, Globe } from 'lucide-react';
 
-const socket = io('http://localhost:4000', { 
+const socket = io('https://jeevanshaadi.onrender.com', { 
   auth: { token: localStorage.getItem('token') } 
 });
 
@@ -41,7 +41,7 @@ const PendingRequests = () => {
       setLoading(true);
       setError(null);
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}/api/chat/requests/pending`,
+        `${import.meta.env.VITE_BACKEND_URL || 'https://jeevanshaadi.onrender.com'}/api/chat/requests/pending`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -61,7 +61,7 @@ const PendingRequests = () => {
   const handleAction = async (requestId, action, senderId, senderName) => {
     try {
       const res = await axios.patch(
-        `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}/api/chat/requests/${requestId}/action`,
+        `${import.meta.env.VITE_BACKEND_URL || 'https://jeevanshaadi.onrender.com'}/api/chat/requests/${requestId}/action`,
         { action },
         { headers: { Authorization: `Bearer ${token}` } }
       );

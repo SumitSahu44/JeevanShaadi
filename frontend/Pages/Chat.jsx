@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 import { setRooms, setMessages, addMessage, clearMessages, removeMessage, updateMessage } from '../src/store/chatSlice';
 import { SendHorizontal, Search, MoreVertical, ArrowLeft, Edit2, Trash2, Check, X, ChevronDown, Menu } from 'lucide-react';
 
-const socket = io('http://localhost:4000', {
+const socket = io('https://jeevanshaadi.onrender.com', {
   auth: { token: localStorage.getItem('token') }
 });
 
@@ -211,7 +211,7 @@ const Chat = () => {
 
   const fetchRooms = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:4000/api/chat/rooms',
+      const res = await axios.get('https://jeevanshaadi.onrender.com/api/chat/rooms',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) dispatch(setRooms(res.data.data));
@@ -220,13 +220,13 @@ const Chat = () => {
       // toast.error('Error fetching chats');
     }
   }, [token, user?.id, dispatch]);
-  
+
 
   const setRoom = useCallback(async (id) => {
     console.log('Joining room:', id, 'User:', user?.id); // Debug log added
     socket.emit('joinRoom', id);
     try {
-      const res = await axios.get(`http://localhost:4000/api/chat/rooms/${id}/messages`,
+      const res = await axios.get(`https://jeevanshaadi.onrender.com/api/chat/rooms/${id}/messages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) {
@@ -288,7 +288,7 @@ const Chat = () => {
   const confirmDeleteMessage = useCallback(async () => {
     if (!messageToDelete || !roomId) return;
     try {
-      await axios.delete(`http://localhost:4000/api/chat/rooms/${roomId}/messages/${messageToDelete}`,
+      await axios.delete(`https://jeevanshaadi.onrender.com/api/chat/rooms/${roomId}/messages/${messageToDelete}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       socket.emit('deleteMessage', { roomId, messageId: messageToDelete });
