@@ -1,6 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Cake, Ruler, GraduationCap, Briefcase, Heart, Mail, Phone, User, Settings, MessageCircle, ChevronLeft, Upload, Save, X, Camera } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  MapPin,
+  Cake,
+  Ruler,
+  GraduationCap,
+  Briefcase,
+  Heart,
+  Mail,
+  Phone,
+  User,
+  Settings,
+  MessageCircle,
+  ChevronLeft,
+  Upload,
+  Save,
+  X,
+  Camera,
+} from "lucide-react";
 
 const EditProfile = () => {
   const { id } = useParams();
@@ -10,42 +27,43 @@ const EditProfile = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    Name: '',
-    gender: '',
-    dob: '',
-    age: '',
-    height: '',
-    maritalStatus: '',
-    profileFor: '',
-    religion: '',
-    community: '',
-    subCommunity: '',
+    Name: "",
+    gender: "",
+    dob: "",
+    age: "",
+    height: "",
+    maritalStatus: "",
+    profileFor: "",
+    religion: "",
+    community: "",
+    subCommunity: "",
     noCasteBar: false,
-    city: '',
-    state: '',
-    country: 'India',
-    livingIn: '',
-    diet: '',
-    weight: '',
-    education: '',
-    highestQualification: '',
-    occupation: '',
-    workingWith: '',
-    workAs: '',
-    income: '',
-    motherTongue: '',
-    about: '',
-    familyBackground: '',
+    city: "",
+    state: "",
+    country: "India",
+    livingIn: "",
+    diet: "",
+    weight: "",
+    education: "",
+    highestQualification: "",
+    occupation: "",
+    workingWith: "",
+    workAs: "",
+    income: "",
+    motherTongue: "",
+    about: "",
+    familyBackground: "",
     liveWithFamily: false,
-    motherName: '',
-    fatherName: '',
-    mobile: '',
-    email: ''
+    motherName: "",
+    fatherName: "",
+    mobile: "",
+    email: "",
   });
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState("");
 
-  const PLACEHOLDER_IMAGE = 'https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg';
+  const PLACEHOLDER_IMAGE =
+    "https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg";
 
   useEffect(() => {
     fetchProfile();
@@ -53,65 +71,85 @@ const EditProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('You are not logged in');
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("You are not logged in");
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/profile/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.message || 'Failed to fetch profile');
+        throw new Error(err.message || "Failed to fetch profile");
       }
 
       const userProfile = await response.json();
 
       if (userProfile._id !== id) {
-        throw new Error('Unauthorized: You can only edit your own profile');
+        throw new Error("Unauthorized: You can only edit your own profile");
       }
 
       setCurrentUser(userProfile);
 
       setFormData({
-        Name: userProfile.Name || '',
-        gender: userProfile.gender || '',
-        dob: userProfile.dob ? new Date(userProfile.dob).toISOString().split('T')[0] : '',
-        age: userProfile.age || '',
-        height: userProfile.height || '',
-        maritalStatus: userProfile.maritalStatus || '',
-        profileFor: userProfile.profileFor || '',
-        religion: userProfile.religion || '',
-        community: userProfile.community || '',
-        subCommunity: userProfile.subCommunity || '',
+        Name: userProfile.Name || "",
+        gender: userProfile.gender || "",
+        dob: userProfile.dob
+          ? new Date(userProfile.dob).toISOString().split("T")[0]
+          : "",
+        age: userProfile.age || "",
+        height: userProfile.height || "",
+        maritalStatus: userProfile.maritalStatus || "",
+        profileFor: userProfile.profileFor || "",
+        religion: userProfile.religion || "",
+        community: userProfile.community || "",
+        subCommunity: userProfile.subCommunity || "",
         noCasteBar: userProfile.noCasteBar || false,
-        city: userProfile.city || '',
-        state: userProfile.state || '',
-        country: userProfile.country || 'India',
-        livingIn: userProfile.livingIn || '',
-        diet: userProfile.diet || '',
-        weight: userProfile.weight || '',
-        education: userProfile.education || '',
-        highestQualification: userProfile.highestQualification || '',
-        occupation: userProfile.workDetails || '',
-        workingWith: userProfile.workingWith || '',
-        workAs: userProfile.workDetails || '',
-        income: userProfile.income || '',
-        motherTongue: userProfile.motherTongue || '',
-        about: userProfile.aboutYourself || '',
-        familyBackground: userProfile.familyBackground || '',
+        city: userProfile.city || "",
+        state: userProfile.state || "",
+        country: userProfile.country || "India",
+        livingIn: userProfile.livingIn || "",
+        diet: userProfile.diet || "",
+        weight: userProfile.weight || "",
+        education: userProfile.education || "",
+        highestQualification: userProfile.highestQualification || "",
+        occupation: userProfile.workDetails || "",
+        workingWith: userProfile.workingWith || "",
+        workAs: userProfile.workDetails || "",
+        income: userProfile.income || "",
+        motherTongue: userProfile.motherTongue || "",
+        about: userProfile.aboutYourself || "",
+        familyBackground: userProfile.familyBackground || "",
         liveWithFamily: userProfile.liveWithFamily || false,
-        motherName: userProfile.motherName || '',
-        fatherName: userProfile.fatherName || '',
-        mobile: userProfile.mobile || '',
-        email: userProfile.email || '',
+        motherName: userProfile.motherName || "",
+        fatherName: userProfile.fatherName || "",
+        mobile: userProfile.mobile || "",
+        email: userProfile.email || "",
       });
 
-      if (userProfile.profile?.photos?.[0]?.data) {
+      if (userProfile.profile?.photos?.[0]?.url) {
+        setImagePreview(userProfile.profile.photos[0].url);
+      } else if (userProfile.profileImage?.url) {
+        setImagePreview(userProfile.profileImage.url);
+      } else if (userProfile.profile?.photos?.[0]?.data) {
         const bytes = new Uint8Array(userProfile.profile.photos[0].data.data);
-        let binary = '';
-        bytes.forEach(b => binary += String.fromCharCode(b));
-        setImagePreview(`data:${userProfile.profile.photos[0].contentType};base64,${btoa(binary)}`);
+        let binary = "";
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
+        setImagePreview(
+          `data:${userProfile.profile.photos[0].contentType};base64,${btoa(
+            binary
+          )}`
+        );
+      } else if (userProfile.profileImage?.data) {
+        const bytes = new Uint8Array(userProfile.profileImage.data.data);
+        let binary = "";
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
+        setImagePreview(
+          `data:${userProfile.profileImage.contentType};base64,${btoa(binary)}`
+        );
       }
     } catch (err) {
       setError(err.message);
@@ -122,9 +160,9 @@ const EditProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -144,7 +182,7 @@ const EditProfile = () => {
     setSaving(true);
     setError(null);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const submitData = new FormData();
 
       Object.entries(formData).forEach(([key, value]) => {
@@ -152,24 +190,27 @@ const EditProfile = () => {
       });
 
       if (imageFile) {
-        submitData.append('profileImage', imageFile);
+        submitData.append("profileImage", imageFile);
       }
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: submitData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: submitData,
+        }
+      );
 
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.message || 'Update failed');
+        throw new Error(err.message || "Update failed");
       }
 
-      alert('Profile updated!');
-      navigate('/dashboard');
+      alert("Profile updated!");
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -178,10 +219,23 @@ const EditProfile = () => {
   };
 
   const formatDate = (dob) => {
-    if (!dob) return '';
+    if (!dob) return "";
     const date = new Date(dob);
-    const day = date.getDate().toString().padStart(2, '0');
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const day = date.getDate().toString().padStart(2, "0");
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
     const month = monthNames[date.getMonth()];
     const year = date.getFullYear();
     return `${day} ${month}, ${year}`;
@@ -208,10 +262,12 @@ const EditProfile = () => {
           <div className="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <X className="w-7 h-7 text-neutral-700" />
           </div>
-          <h3 className="text-lg font-semibold text-neutral-900 mb-2">Something went wrong</h3>
+          <h3 className="text-lg font-semibold text-neutral-900 mb-2">
+            Something went wrong
+          </h3>
           <p className="text-neutral-600 mb-6">{error}</p>
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             className="px-5 py-2.5 bg-neutral-900 text-white rounded-lg font-medium hover:bg-neutral-800 transition-colors"
           >
             Back to Dashboard
@@ -226,17 +282,21 @@ const EditProfile = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6 transition-colors group"
           >
             <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back</span>
           </button>
-          
+
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">Edit Profile</h1>
-              <p className="text-neutral-600 mt-1.5">Update your personal information</p>
+              <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">
+                Edit Profile
+              </h1>
+              <p className="text-neutral-600 mt-1.5">
+                Update your personal information
+              </p>
             </div>
           </div>
         </div>
@@ -271,7 +331,7 @@ const EditProfile = () => {
                   className="hidden"
                   id="profile-image"
                 />
-                
+
                 <label
                   htmlFor="profile-image"
                   className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 border border-neutral-200 rounded-lg cursor-pointer transition-colors font-medium"
@@ -279,14 +339,16 @@ const EditProfile = () => {
                   <Upload className="w-4 h-4" />
                   Change Photo
                 </label>
-                
+
                 <p className="text-xs text-neutral-500 text-center mt-3">
                   JPG, PNG or GIF • Max 5MB
                 </p>
               </div>
 
               <div className="border-t border-neutral-200 p-6">
-                <h3 className="text-sm font-semibold text-neutral-900 mb-4">Quick Info</h3>
+                <h3 className="text-sm font-semibold text-neutral-900 mb-4">
+                  Quick Info
+                </h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm">
                     <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
@@ -294,7 +356,9 @@ const EditProfile = () => {
                     </div>
                     <div>
                       <p className="text-neutral-500 text-xs">Name</p>
-                      <p className="text-neutral-900 font-medium">{formData.Name || 'Not set'}</p>
+                      <p className="text-neutral-900 font-medium">
+                        {formData.Name || "Not set"}
+                      </p>
                     </div>
                   </div>
                   {/* <div className="flex items-center gap-3 text-sm">
@@ -313,7 +377,11 @@ const EditProfile = () => {
                     <div>
                       <p className="text-neutral-500 text-xs">Location</p>
                       <p className="text-neutral-900 font-medium">
-                        {formData.city || formData.state ? `${formData.city || ''}${formData.city && formData.state ? ', ' : ''}${formData.state || ''}` : 'Not set'}
+                        {formData.city || formData.state
+                          ? `${formData.city || ""}${
+                              formData.city && formData.state ? ", " : ""
+                            }${formData.state || ""}`
+                          : "Not set"}
                       </p>
                     </div>
                   </div>
@@ -323,27 +391,53 @@ const EditProfile = () => {
                     </div>
                     <div>
                       <p className="text-neutral-500 text-xs">Occupation</p>
-                      <p className="text-neutral-900 font-medium">{formData.occupation || 'Not set'}</p>
+                      <p className="text-neutral-900 font-medium">
+                        {formData.occupation || "Not set"}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="border-t border-neutral-200 p-6">
-                <h3 className="text-sm font-semibold text-neutral-900 mb-3">Profile Completion</h3>
+                <h3 className="text-sm font-semibold text-neutral-900 mb-3">
+                  Profile Completion
+                </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-neutral-600 mb-1">
                     <span>Progress</span>
-                    <span>{Math.round((Object.values(formData).filter(v => v !== '' && v !== false).length / Object.keys(formData).length) * 100)}%</span>
+                    <span>
+                      {Math.round(
+                        (Object.values(formData).filter(
+                          (v) => v !== "" && v !== false
+                        ).length /
+                          Object.keys(formData).length) *
+                          100
+                      )}
+                      %
+                    </span>
                   </div>
                   <div className="w-full bg-neutral-100 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(Object.values(formData).filter(v => v !== '' && v !== false).length / Object.keys(formData).length) * 100}%` }}
+                      style={{
+                        width: `${
+                          (Object.values(formData).filter(
+                            (v) => v !== "" && v !== false
+                          ).length /
+                            Object.keys(formData).length) *
+                          100
+                        }%`,
+                      }}
                     ></div>
                   </div>
                   <p className="text-xs text-neutral-500 mt-2">
-                    {Object.values(formData).filter(v => v !== '' && v !== false).length} of {Object.keys(formData).length} fields completed
+                    {
+                      Object.values(formData).filter(
+                        (v) => v !== "" && v !== false
+                      ).length
+                    }{" "}
+                    of {Object.keys(formData).length} fields completed
                   </p>
                 </div>
               </div>
@@ -361,7 +455,9 @@ const EditProfile = () => {
               <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Full Name</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Full Name
+                    </label>
                     <input
                       type="text"
                       name="Name"
@@ -371,7 +467,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Gender</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Gender
+                    </label>
                     <select
                       name="gender"
                       value={formData.gender}
@@ -384,7 +482,9 @@ const EditProfile = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Date of Birth</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Date of Birth
+                    </label>
                     <input
                       type="date"
                       name="dob"
@@ -393,7 +493,9 @@ const EditProfile = () => {
                       className="w-full px-3.5 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-500 transition-colors"
                     />
                     {formData.dob && (
-                      <p className="text-sm text-neutral-500 mt-1.5">{formatDate(formData.dob)}</p>
+                      <p className="text-sm text-neutral-500 mt-1.5">
+                        {formatDate(formData.dob)}
+                      </p>
                     )}
                   </div>
                   {/* <div>
@@ -407,7 +509,9 @@ const EditProfile = () => {
                     />
                   </div> */}
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Height (cm)</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Height (cm)
+                    </label>
                     <input
                       type="number"
                       name="height"
@@ -418,7 +522,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Weight (kg)</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Weight (kg)
+                    </label>
                     <input
                       type="number"
                       name="weight"
@@ -442,7 +548,9 @@ const EditProfile = () => {
               <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Email Address</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Email Address
+                    </label>
                     <input
                       type="email"
                       name="email"
@@ -452,7 +560,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Mobile Number</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Mobile Number
+                    </label>
                     <input
                       type="tel"
                       name="mobile"
@@ -475,7 +585,9 @@ const EditProfile = () => {
               <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">City</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      City
+                    </label>
                     <input
                       type="text"
                       name="city"
@@ -486,7 +598,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">State</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      State
+                    </label>
                     <input
                       type="text"
                       name="state"
@@ -497,7 +611,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Country</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Country
+                    </label>
                     <input
                       type="text"
                       name="country"
@@ -507,7 +623,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Living In</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Living In
+                    </label>
                     <input
                       type="text"
                       name="livingIn"
@@ -518,7 +636,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Profile For</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Profile For
+                    </label>
                     <select
                       name="profileFor"
                       value={formData.profileFor}
@@ -549,7 +669,9 @@ const EditProfile = () => {
               <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Religion</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Religion
+                    </label>
                     <input
                       type="text"
                       name="religion"
@@ -560,7 +682,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Community</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Community
+                    </label>
                     <input
                       type="text"
                       name="community"
@@ -571,7 +695,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Sub Community</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Sub Community
+                    </label>
                     <input
                       type="text"
                       name="subCommunity"
@@ -590,11 +716,15 @@ const EditProfile = () => {
                         onChange={handleInputChange}
                         className="w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-500"
                       />
-                      <span className="text-sm font-medium text-neutral-700">No Caste Bar</span>
+                      <span className="text-sm font-medium text-neutral-700">
+                        No Caste Bar
+                      </span>
                     </label>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Mother's Name</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Mother's Name
+                    </label>
                     <input
                       type="text"
                       name="motherName"
@@ -604,7 +734,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Father's Name</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Father's Name
+                    </label>
                     <input
                       type="text"
                       name="fatherName"
@@ -614,7 +746,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Family Background</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Family Background
+                    </label>
                     <input
                       type="text"
                       name="familyBackground"
@@ -633,7 +767,9 @@ const EditProfile = () => {
                         onChange={handleInputChange}
                         className="w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-500"
                       />
-                      <span className="text-sm font-medium text-neutral-700">Live with Family</span>
+                      <span className="text-sm font-medium text-neutral-700">
+                        Live with Family
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -650,7 +786,9 @@ const EditProfile = () => {
               <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Diet Preference</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Diet Preference
+                    </label>
                     <select
                       name="diet"
                       value={formData.diet}
@@ -666,7 +804,9 @@ const EditProfile = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Mother Tongue</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Mother Tongue
+                    </label>
                     <input
                       type="text"
                       name="motherTongue"
@@ -701,7 +841,9 @@ const EditProfile = () => {
                     />
                   </div> */}
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Highest Qualification</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Highest Qualification
+                    </label>
                     <input
                       type="text"
                       name="highestQualification"
@@ -712,7 +854,9 @@ const EditProfile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Occupation</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Occupation
+                    </label>
                     <input
                       type="text"
                       name="occupation"
@@ -750,7 +894,9 @@ const EditProfile = () => {
                     />
                   </div> */}
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">Annual Income</label>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Annual Income
+                    </label>
                     <input
                       type="text"
                       name="income"

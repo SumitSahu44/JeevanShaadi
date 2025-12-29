@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   education: String,
   occupation: String,
   annualIncome: Number,
@@ -13,11 +13,13 @@ const profileSchema = new mongoose.Schema({
   hobbies: [String],
   interests: [String],
   aboutMe: String,
-  photos: [{
-    data: Buffer,
-    contentType: String,
-  }],
+  photos: [
+    {
+      url: String,
+      publicId: String,
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Profile', profileSchema);
+module.exports = mongoose.model("Profile", profileSchema);

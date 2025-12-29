@@ -3,7 +3,8 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
-const PLACEHOLDER_IMAGE = "https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg"; // Add your placeholder image path here
+const PLACEHOLDER_IMAGE =
+  "https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg"; // Add your placeholder image path here
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,28 +18,49 @@ export default function Navbar() {
 
   const fetchCurrentUser = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
         setLoading(false);
         return;
       }
 
-      const meRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
-      if (!meRes.ok) throw new Error('Failed to fetch your profile');
+      const meRes = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/profile/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!meRes.ok) throw new Error("Failed to fetch your profile");
       const meData = await meRes.json();
       console.log(meData);
 
       const processImage = (user) => {
         let img = PLACEHOLDER_IMAGE;
-        if (user.profile?.photos?.[0]?.data) {
-          const bytes = new Uint8Array(user.profile.photos[0].data.data);
-          let binary = '';
-          bytes.forEach(b => binary += String.fromCharCode(b));
-          img = `data:${user.profile.photos[0].contentType};base64,${btoa(binary)}`;
+
+        // Prioritize Profile photos (Cloudinary URL)
+        if (user.profile?.photos?.[0]?.url) {
+          img = user.profile.photos[0].url;
         }
+        // Fallback to User profileImage (Cloudinary URL)
+        else if (user.profileImage?.url) {
+          img = user.profileImage.url;
+        }
+        // Fallback for legacy Base64 images
+        else if (user.profile?.photos?.[0]?.data) {
+          const bytes = new Uint8Array(user.profile.photos[0].data.data);
+          let binary = "";
+          bytes.forEach((b) => (binary += String.fromCharCode(b)));
+          img = `data:${user.profile.photos[0].contentType};base64,${btoa(
+            binary
+          )}`;
+        } else if (user.profileImage?.data) {
+          const bytes = new Uint8Array(user.profileImage.data.data);
+          let binary = "";
+          bytes.forEach((b) => (binary += String.fromCharCode(b)));
+          img = `data:${user.profileImage.contentType};base64,${btoa(binary)}`;
+        }
+
         return { ...user, profileImage: img };
       };
 
@@ -52,19 +74,11 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setCurrentUser(null);
     setIsOpen(false);
-    navigate('/login');
+    navigate("/login");
   };
-
-  if (loading) {
-    return (
-      <nav className="bg-white shadow-md top-0 left-0 w-full z-50 h-16 flex items-center justify-center">
-        <div>Loading...</div>
-      </nav>
-    );
-  }
 
   return (
     <nav className="bg-white shadow-md top-0 left-0 w-full z-50">
@@ -83,30 +97,33 @@ export default function Navbar() {
             <a href="/help" className="hover:text-red-600 transition-colors">
               Help
             </a>
-           {currentUser ? (
+            {loading ? (
+              <div className="flex items-center space-x-2 animate-pulse">
+                <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                <div className="h-4 w-20 bg-gray-200 rounded"></div>
+              </div>
+            ) : currentUser ? (
               <>
-                <NavLink to="/dashboard" className="hover:text-red-600 transition-colors">
+                <NavLink
+                  to="/dashboard"
+                  className="hover:text-red-600 transition-colors"
+                >
                   Dashboard
                 </NavLink>
-              </>
-            ) : (
-              <Link to="/login" className="hover:text-red-600 transition-colors">
-                Login
-              </Link>
-            )}
-
-            {currentUser ? (
-              <>
                 <div className="flex items-center space-x-2">
-                  <img 
-                    src={currentUser.profileImage} 
-                    alt="Profile" 
-                    className="w-8 h-8  rounded-full object-cover" 
-                    onError={(e) => { e.target.src = PLACEHOLDER_IMAGE; }}
+                  <img
+                    src={currentUser.profileImage}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full object-cover"
+                    onError={(e) => {
+                      e.target.src = PLACEHOLDER_IMAGE;
+                    }}
                   />
-                  <span className="text-sm font-medium">{currentUser.Name}</span>
+                  <span className="text-sm font-medium">
+                    {currentUser.Name}
+                  </span>
                 </div>
-                <button 
+                <button
                   onClick={handleLogout}
                   className="text-red-600 hover:text-red-700 transition-colors"
                 >
@@ -114,7 +131,10 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <Link to="/login" className="hover:text-red-600 transition-colors">
+              <Link
+                to="/login"
+                className="hover:text-red-600 transition-colors"
+              >
                 Login
               </Link>
             )}
@@ -157,18 +177,30 @@ export default function Navbar() {
               >
                 Help
               </a>
-              {currentUser ? (
+              {loading ? (
+                <div className="flex items-center space-x-3 bg-gray-100 rounded p-2 animate-pulse">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-24 bg-gray-300 rounded"></div>
+                    <div className="h-3 w-16 bg-gray-300 rounded"></div>
+                  </div>
+                </div>
+              ) : currentUser ? (
                 <>
                   <div className="flex items-center space-x-3 bg-gray-100 rounded">
-                    <img 
-                      src={currentUser.profileImage} 
-                      alt="Profile" 
-                      className="w-10 h-10 rounded-full object-cover" 
-                      onError={(e) => { e.target.src = PLACEHOLDER_IMAGE; }}
+                    <img
+                      src={currentUser.profileImage}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.src = PLACEHOLDER_IMAGE;
+                      }}
                     />
                     <div>
-                      <p className="font-semibold text-gray-800">{currentUser.Name}</p>
-                      <button 
+                      <p className="font-semibold text-gray-800">
+                        {currentUser.Name}
+                      </p>
+                      <button
                         onClick={handleLogout}
                         className="text-red-600 text-sm"
                       >

@@ -1,12 +1,8 @@
 // controllers/authController.js
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');
-
-// Multer memory storage (unchanged)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const User = require("../models/user");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { upload } = require("../config/cloudinary");
 
 /* ---------- Helper: generate unique JSxxxxxx ---------- */
 const generateUserId = async () => {
@@ -24,17 +20,41 @@ const generateUserId = async () => {
 const signup = async (req, res) => {
   try {
     const {
-      profileFor, Name, gender, dob, maritalStatus, height, weight, diet,
-      religion, community, subCommunity, noCasteBar, city, state, country,
-      liveWithFamily, familyBackground,
-      motherOccupation, fatherOccupation, siblings, maritalStatusFamily,   // NEW
-      highestQualification, workDetails, income, motherTongue,
-      email, mobile, password, aboutYourself
+      profileFor,
+      Name,
+      gender,
+      dob,
+      maritalStatus,
+      height,
+      weight,
+      diet,
+      religion,
+      community,
+      subCommunity,
+      noCasteBar,
+      city,
+      state,
+      country,
+      liveWithFamily,
+      familyBackground,
+      motherOccupation,
+      fatherOccupation,
+      siblings,
+      maritalStatusFamily, // NEW
+      highestQualification,
+      workDetails,
+      income,
+      motherTongue,
+      email,
+      mobile,
+      password,
+      aboutYourself,
     } = req.body;
 
     // ---- existence check ----
     const existing = await User.findOne({ $or: [{ email }, { mobile }] });
-    if (existing) return res.status(400).json({ message: "User already exists" });
+    if (existing)
+      return res.status(400).json({ message: "User already exists" });
 
     // ---- password hash ----
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,47 +65,70 @@ const signup = async (req, res) => {
     // ---- profile image (optional) ----
     let profileImage = undefined;
     if (req.file) {
-      profileImage = { data: req.file.buffer, contentType: req.file.mimetype };
+      profileImage = { url: req.file.path, publicId: req.file.filename };
     }
 
     // ---- create user ----
     const newUser = await User.create({
-      userId,                                            // NEW
-      profileFor, Name, gender, dob, maritalStatus, height, weight, diet,
-      religion, community, subCommunity,
-      noCasteBar: noCasteBar === 'true',
-      city, state, livingIn: country,
-      liveWithFamily: liveWithFamily === 'true',
+      userId, // NEW
+      profileFor,
+      Name,
+      gender,
+      dob,
+      maritalStatus,
+      height,
+      weight,
+      diet,
+      religion,
+      community,
+      subCommunity,
+      noCasteBar: noCasteBar === "true",
+      city,
+      state,
+      livingIn: country,
+      liveWithFamily: liveWithFamily === "true",
       familyBackground,
-      motherOccupation, fatherOccupation, siblings, maritalStatusFamily,   // NEW
-      highestQualification, workDetails, income, motherTongue,
-      email, mobile, password: hashedPassword, aboutYourself,
-      profileImage
+      motherOccupation,
+      fatherOccupation,
+      siblings,
+      maritalStatusFamily, // NEW
+      highestQualification,
+      workDetails,
+      income,
+      motherTongue,
+      email,
+      mobile,
+      password: hashedPassword,
+      aboutYourself,
+      profileImage,
     });
 
     res.status(201).json({
       message: "User registered successfully",
-      user: { _id: newUser._id, userId: newUser.userId, Name: newUser.Name, email: newUser.email }
+      user: {
+        _id: newUser._id,
+        userId: newUser.userId,
+        Name: newUser.Name,
+        email: newUser.email,
+      },
     });
-
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
 // POST /api/login
-const login= async (req, res) => {
- const { identifier, password } = req.body;
+const login = async (req, res) => {
+  const { identifier, password } = req.body;
 
   try {
     const user = await User.findOne({
       $or: [
         { email: identifier },
         { mobile: identifier },
-        { userId: identifier } // JSxxxxx
-      ]
+        { userId: identifier }, // JSxxxxx
+      ],
     });
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -93,7 +136,9 @@ const login= async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.json({
       token,
@@ -103,19 +148,20 @@ const login= async (req, res) => {
         name: user.Name,
         email: user.email,
         mobile: user.mobile,
-        profileImage: user.profileImage
+        profileImage: user.profileImage,
       },
-      message: "Login successful"
+      message: "Login successful",
     });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
-
 };
 
 /* ---------- LOGOUT (unchanged) ---------- */
 const logout = async (req, res) => {
-  res.status(200).json({ message: 'Logged out successfully (token removed from client)' });
+  res
+    .status(200)
+    .json({ message: "Logged out successfully (token removed from client)" });
 };
 
 module.exports = { signup, login, logout, upload };
